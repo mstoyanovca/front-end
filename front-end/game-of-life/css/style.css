@@ -1,0 +1,50 @@
+.container {
+  min-width: 950px;
+}
+
+.board {
+  margin: 25px auto;
+  padding: 1px;
+  border: 6px solid gray;
+  border-radius: 6px;
+  display: table;
+}
+
+.my-row {
+  font-size: 0;
+}
+
+.cell-dead {
+  width: 12px;
+  height: 12px;
+  background-color: black;
+  border-bottom: 1px solid gray;
+  border-right: 1px solid gray;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.cell-young {
+  width: 12px;
+  height: 12px;
+  background-color: pink;
+  border-bottom: 1px solid gray;
+  border-right: 1px solid gray;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.cell-old {
+  width: 12px;
+  height: 12px;
+  background-color: red;
+  border-bottom: 1px solid gray;
+  border-right: 1px solid gray;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.cell-small {
+  width: 9px;
+  height: 9px;
+}

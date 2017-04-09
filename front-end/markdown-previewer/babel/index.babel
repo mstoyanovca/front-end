@@ -1,0 +1,79 @@
+var text = "Heading \n ======= \n\n Sub-heading \n ----------- \n\n ### Another deeper heading \n\n Paragraphs are separated by a blank line. \n\n Leave 2 spaces at the end of a line to do a line break  \n\n Text attributes *italic*, **bold**, `monospace`, ~~strikethrough~~ . \n\n Shopping list: \n\n * apples \n * oranges \n * pears \n\nNumbered list: \n 1. apples \n 2. oranges \n 3. pears \n\nThe rain---not the reign---in Spain. \n\n *[Herman Fassett](https://freecodecamp.com/hermanfassett)*";
+
+var Left = React.createClass({
+  render: function() {
+    return (
+      <div className="col-sm-6">
+        <Label1 />
+        <TextArea text={text} />
+      </div>
+    );
+  }
+});
+
+var Label1 = React.createClass({
+  render: function() {
+    return (
+      <label htmlFor="input">
+        Type GitHub-flavored markdown below:
+      </label>
+    );
+  }
+});
+
+var TextArea = React.createClass({
+  render: function() {
+    return (
+      <textarea id="input" className="form-control" rows="20">
+        {this.props.text}
+      </textarea>
+    );
+  }
+});
+
+var Right = React.createClass({
+  render: function() {
+    return (
+      <div className="col-sm-6">
+        <Label2 />
+        <Panel />
+      </div>
+    );
+  }
+});
+
+var Label2 = React.createClass({
+  render: function() {
+    return (
+      <label htmlFor="output">
+        HTML output:
+      </label>
+    );
+  }
+});
+
+var Panel = React.createClass({
+  render: function() {
+    return (
+      <div className="panel panel-default">
+        <div id="output" className="panel-body output"></div>
+      </div>
+    );
+  }
+});
+
+ReactDOM.render(
+  <div>
+    <Left />
+    <Right />
+  </div>
+  , document.getElementById('row')
+);
+
+$(document).ready(function() {
+  $("#output").html(marked(text));
+  $("#input").keyup(function() {
+    var text = $(this).val();
+    $("#output").html(marked(text));
+  });
+});
