@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html >
 <head>
-  <meta charset="UTF-8">
-  <title>Tic Tac Toe</title>
-  <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  
-  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
-<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Indie+Flower|Yatra+One'>
-
-      <link rel="stylesheet" href="css/style.css">
-
-  
+	<meta charset="UTF-8">
+  	<title>Tic Tac Toe</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  	<link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel='stylesheet' href="https://fonts.googleapis.com/css?family=Indie+Flower|Yatra+One">
+	<link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
   <div class="container" ng-app="app" ng-controller="MyController">
   <!-- header -->
@@ -69,24 +63,22 @@
   </div>
   <!-- board -->
   <div class="board" ng-cloak>
-    <div ng-repeat="i in [0, 1, 2]">
-      <div ng-repeat="j in [0, 1, 2]" ng-click="mark(i, j)" ng-class="cellClass[i][j]">
-        <span ng-show="cell[i][j] === 0"></span>
-        <span ng-show="cell[i][j] === 1  && yourMark === 'X' || cell[i][j] === 2 && yourMark === 'O'">X</span>
-        <span ng-show="cell[i][j] === 2 && yourMark === 'X' || cell[i][j] === 1 && yourMark === 'O'">O</span>
-      </div>
-    </div>
-  </div>
-  <!-- footer -->
-  <footer>
-    <hr>
-    <p class="text-center text-muted">Written by <a class="author" href="https://www.linkedin.com/in/martin-stoyanov-72845449" target="_blank">Martin Stoyanov</a>, October 2016</p>
-  </footer>
-</div>    <!-- end of .container -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'></script>
-
-    <script src="js/index.js"></script>
-
+    	<div ng-repeat="i in [0, 1, 2]">
+      		<div ng-repeat="j in [0, 1, 2]" ng-click="mark(i, j)" ng-class="cellClass[i][j]">
+        		<span ng-show="cell[i][j] === 0"></span>
+        		<span ng-show="cell[i][j] === 1  && yourMark === 'X' || cell[i][j] === 2 && yourMark === 'O'">X</span>
+        		<span ng-show="cell[i][j] === 2 && yourMark === 'X' || cell[i][j] === 1 && yourMark === 'O'">O</span>
+      		</div>
+    	</div>
+  	</div>
+  	<!-- footer -->
+  	<footer>
+    	<hr>
+    	<p class="text-center text-muted">Written by <a class="author" href="https://www.linkedin.com/in/martin-stoyanov-72845449" target="_blank">Martin Stoyanov</a>, October 2016</p>
+  	</footer>
+	</div>    <!-- end of .container -->
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="js/index.js"></script>
 </body>
 </html>
