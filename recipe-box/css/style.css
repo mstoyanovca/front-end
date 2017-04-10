@@ -1,0 +1,8 @@
+.link {
+  cursor: pointer;
+}
+
+.button-wrapper {
+  margin-right: 4px;
+  display: inline-block;
+}
