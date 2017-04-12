@@ -1,0 +1,268 @@
+var recipes = JSON.parse(localStorage.getItem('_mstoyanovca_recipes')) || [];
+if(recipes.length === 0) {
+  recipes = [{"name":"Soup","ingredients":["Water","Meat","Eggs"]}, {"name":"Pizza","ingredients":["Dough","Pepperoni","Tomato sauce"]},{"name":"Steak","ingredients":["Steak","Sauce"," Spices"]}];
+  localStorage.setItem('_mstoyanovca_recipes', JSON.stringify(recipes));
+}
+var Accordion = ReactBootstrap.Accordion;
+var Panel = ReactBootstrap.Panel;
+var Button = ReactBootstrap.Button;
+var Modal = ReactBootstrap.Modal;
+var FormGroup = ReactBootstrap.FormGroup;
+var ControlLabel = ReactBootstrap.ControlLabel;
+var FormControl = ReactBootstrap.FormControl;
+var HelpBlock = ReactBootstrap.HelpBlock;
+
+// accordion of recipes:
+const RecipesAccordion = React.createClass({
+  render: function() {
+    return (
+      <Accordion>
+        {this.props.recipes.map((recipe, i) => (
+          <Panel header={<span className="link">{recipe.name}</span>} eventKey={i}>
+            <RecipePanel recipe={recipe} />
+          </Panel>
+        ))}
+      </Accordion>
+    );
+  }
+});
+
+// content of each panel of the accordion:
+const RecipePanel = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <h4 className="text-center">
+          Ingredients
+        </h4>
+        <hr/>
+        <ul>
+          {this.props.recipe.ingredients.map((ingredient) => (
+            <li>{ingredient}</li>
+          ))}
+        </ul>
+        <div className="button-wrapper">
+          <EditRecipeModal recipe={this.props.recipe} />
+        </div>
+        <div className="button-wrapper">
+          <DeleteRecipeModal recipe={this.props.recipe} />
+        </div>
+      </div>
+    );
+  }
+});
+
+// modals:
+const AddRecipeModal = React.createClass({
+  getInitialState() {
+    return {
+      showModal: false,
+      recipe: {name: "", ingredients: []}
+    };
+  },
+  close() {
+    this.setState({ showModal: false });
+  },
+  open() {
+    this.setState({ showModal: true });
+  },
+  save() {
+    var name = this.refs.recipeForm.state.name;
+    // validation:
+    if(name.length === 0 || !/\S+/.test(name)) return;
+    var ingredients = this.refs.recipeForm.state.ingredients.split(",");
+    // avoid creating an array with a single empty string:
+    if(ingredients.length === 1 && !/\S+/.test(ingredients[0])) ingredients = [];
+    var recipe = {name: name, ingredients: ingredients};
+    var existing = false;
+    for(var i = 0; i < recipes.length; i++) {
+      if(recipes[i].name === recipe.name) {
+        existing = true;
+      }
+    }
+    if(existing) {
+      alert("A recipe with the same name already exists!");
+    } else {
+      recipes.push(recipe);
+      // persist:
+      localStorage.setItem('_mstoyanovca_recipes', JSON.stringify(recipes));
+      refresh();
+      this.close();
+    }
+  },
+  render() {
+    return (
+      <div>
+        <Button bsStyle="primary" onClick={this.open}>
+          Add a Recipe
+        </Button>
+        <Modal show={this.state.showModal} onHide={this.close}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add a Recipe</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <RecipeForm ref="recipeForm" recipe={this.state.recipe} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button bsStyle="default" onClick={this.close}>Cancel</Button>
+            <Button bsStyle="success" onClick={this.save}>Save</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+});
+
+const EditRecipeModal = React.createClass({
+  getInitialState() {
+    return {
+      showModal: false
+    };
+  },
+  close() {
+    this.setState({ showModal: false });
+  },
+  open() {
+    this.setState({ showModal: true });
+  },
+  update() {
+    var oldName = this.props.recipe.name;
+    var name = this.refs.recipeForm.state.name;
+    // validation:
+    if(name.length === 0 || !/\S+/.test(name)) return;
+    var ingredients = this.refs.recipeForm.state.ingredients.split(",");
+    // avoid creating an array with a single empty string:
+    if(ingredients.length === 1 && !/\S+/.test(ingredients[0])) ingredients = [];
+    var recipe = {name: name, ingredients: ingredients};
+    for(var i = 0; i < recipes.length; i++) {
+      if(recipes[i].name === oldName) {
+        recipes[i] = recipe;
+        break;
+      }
+    }
+    // persist:
+    localStorage.setItem('_mstoyanovca_recipes', JSON.stringify(recipes));
+    refresh();
+    this.close();
+  },
+  render() {
+    return (
+      <div>
+        <Button bsStyle="default" bsSize="small" onClick={this.open}>
+          Edit
+        </Button>
+        <Modal show={this.state.showModal} onHide={this.close}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Recipe</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <RecipeForm ref="recipeForm" recipe={this.props.recipe} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button bsStyle="default" onClick={this.close}>Cancel</Button>
+            <Button bsStyle="success" onClick={this.update}>Save</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+});
+
+// recipe form, built in into the recipe add/edit modals:
+const RecipeForm = React.createClass({
+  getInitialState() {
+    return {
+      name: this.props.recipe.name,
+      ingredients: this.props.recipe.ingredients.toString()
+    };
+  },
+  getValidationState() {
+    if (this.state.name.length > 0 && /\S+/.test(this.state.name)) return 'success';
+    else if (length === 0) return 'error';
+  },
+  handleNameChange(e) {
+    this.setState({ name: e.target.value });
+  },
+  handleIngredientsChange(e) {
+    this.setState({ ingredients: e.target.value });
+  },
+  render() {
+    return (
+      <form>
+        <FormGroup controlId="name" validationState={this.getValidationState()}>
+          <ControlLabel>Recipe Name</ControlLabel>
+          <FormControl type="text"
+            value={this.state.name}
+            placeholder="Enter recipe name"
+            onChange={this.handleNameChange}
+          />
+          <FormControl.Feedback />
+          <HelpBlock>Name can not be empty.</HelpBlock>
+        </FormGroup>
+        <FormGroup controlId="ingredients">
+          <ControlLabel>Ingredients</ControlLabel>
+          <FormControl componentClass="textarea"
+            value={this.state.ingredients}
+            placeholder="Enter ingredients, separated by commas"
+            onChange={this.handleIngredientsChange}
+          />
+        </FormGroup>
+      </form>
+    );
+  }
+});
+
+const DeleteRecipeModal = React.createClass({
+  getInitialState() {
+    return {
+      showModal: false
+    };
+  },
+  close() {
+    this.setState({ showModal: false });
+  },
+  open() {
+    this.setState({ showModal: true });
+  },
+  delete() {
+    for(var i = 0; i < recipes.length; i++) {
+      if(recipes[i].name === this.props.recipe.name) {
+        recipes.splice(i, 1);
+        break;
+      }
+    }
+    // persist:
+    localStorage.setItem('_mstoyanovca_recipes', JSON.stringify(recipes));
+    refresh();
+    this.close();
+  },
+  render() {
+    return (
+      <div>
+        <Button bsStyle="danger" bsSize="small" onClick={this.open}>
+          Delete
+        </Button>
+        <Modal show={this.state.showModal} onHide={this.close} bsSize="small">
+          <Modal.Header>
+            <Modal.Title>Delete this recipe?</Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+            <Button bsStyle="default" bsSize="small" onClick={this.close}>Cancel</Button>
+            <Button bsStyle="danger" bsSize="small" onClick={this.delete}>Delete</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+});
+
+// update the screen:
+function refresh() {
+  ReactDOM.render(
+    <div>
+      <RecipesAccordion recipes={recipes} />
+      <AddRecipeModal />
+    </div>, document.getElementById("body"));
+}
+
+refresh();

@@ -1,0 +1,86 @@
+var urlRecent = "https://fcctop100.herokuapp.com/api/fccusers/top/recent";
+var urlAllTime = "https://fcctop100.herokuapp.com/api/fccusers/top/alltime";
+var linkStyle = {textDecoration: 'none'};
+
+var Row = React.createClass({
+  render: function() {
+    return (
+      <tr>
+        <td>{this.props.number}</td>
+        <td>
+          <img src={this.props.camper.img} alt="Profile image"/>
+          <a href={"https://www.freecodecamp.com/"+this.props.camper.username} target="_blank" style={linkStyle}>
+            <i>{this.props.camper.username}</i>
+          </a>
+        </td>
+        <td>{this.props.camper.recent}</td> 
+        <td>{this.props.camper.alltime}</td>
+      </tr>
+    );
+  }
+});
+
+var Table = React.createClass({
+  sortRecent: function() {
+    this.props.url = urlRecent;
+    this.loadCampers();
+  },
+  sortAll: function() {
+    this.props.url = urlAllTime;
+    this.loadCampers();
+  },
+  getInitialState: function() {
+    return {data: []};
+  },
+  loadCampers: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  componentDidMount: function() {
+    this.loadCampers();
+  },
+  render: function() {
+    var rows = [];
+    var number = 0;
+    this.state.data.forEach(function(camper) {
+      number++;
+      rows.push(<Row number={number} camper={camper} />);
+    });
+    return (
+      <div className="table-wrapper">
+        <h3>Free Code Camp Leaderboard</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Username</th>
+              <th>
+                Points in 30 Days
+                <div onClick={this.sortRecent} className="down-arrow" title="Sort by"></div>
+              </th>
+              <th>
+                All Time Points
+                <div onClick={this.sortAll} className="down-arrow" title="Sort by"></div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </table>
+      </div>
+    );
+  }
+});
+    
+ReactDOM.render(
+  <Table url={urlAllTime} />,
+  document.getElementById('container')
+);

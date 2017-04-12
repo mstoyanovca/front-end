@@ -1,0 +1,86 @@
+@media (max-width: 767px) {
+  img.logo {
+    margin: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  div.name {
+    padding-top: 3px;
+  }
+  div.status {
+    padding-top: 3px;
+  }
+}
+
+.container-fluid {
+  padding: 0;
+}
+
+div.header {
+  margin: 0;
+  padding: 15px 0;
+  border-bottom: 2px;
+  border-color: #808080;
+  border-bottom-style: ridge;
+  background-color: #a6a6a6;
+}
+
+h1.heading {
+  margin: 0;
+  color: #f2f2f2;
+  font-family: 'Dancing Script', cursive;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
+
+.navbar-brand {
+  padding: 0 0 2px 15px;
+}
+
+div.body {
+  min-height: 400px;
+  margin: 0;
+  padding: 60px 0;
+  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/721194/paper.jpg");
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+.custom-panel {
+  border-radius: 8px;
+}
+
+img.logo {
+  height: 45px;
+  width: 45px;
+  border-radius: 8px;
+}
+
+img.brand {
+  height: 100%;
+}
+
+h4.status {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+footer {
+  margin: 0;
+  padding: 15px 0;
+  border-top: 2px;
+  border-color: #808080;
+  border-top-style: ridge;
+  background-color: #a6a6a6;
+}
+
+a {
+  text-decoration: none !important;
+}

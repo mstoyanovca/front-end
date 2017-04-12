@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html >
+<head>
+	<meta charset="UTF-8">
+  	<title>Simon Game</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  	<div class="container" ng-app='app' ng-controller='MyController' ng-cloak>
+  	<div ng-class="green">
+    <div class="green-light" ng-click="greenClick(clickable)"></div>
+  	</div><!--
+	--><div ng-class="red">
+    	<div class="red-light" ng-click="redClick(clickable)"></div>
+  	</div>
+  	<div ng-class="yellow">
+    	<div class="yellow-light" ng-click="yellowClick(clickable)"></div>
+  	</div><!--
+	--><div ng-class="blue">
+    	<div class="blue-light" ng-click="blueClick(clickable)"></div>
+  	</div>
+    <div class="inner-ring">
+    	<h1><b>Simon</b><sup>&reg</sup></h1>
+    	<div class="counter">{{display}}</div>
+    	<div ng-class="startBtn" ng-click="start()"></div>
+    	<div ng-class="strictBtn" ng-click="turnStrict()"></div>
+    	<div class="labels">
+      		<span id="count">COUNT</span>
+      		<span id="start">START</span>
+      		<span id="strict">STRICT</span>
+    	</div>
+    	<div class="switch-row">
+      		<span id="on">ON</span>
+      		<div class="switch" ng-click="turnOn()">
+        		<div ng-show="turnedOn" class="toggle-on">
+        	</div>
+        	<div ng-show="!turnedOn" class="toggle-off"></div>
+      	</div>
+      	<span id="off">OFF</span>
+    	</div>
+  	</div>
+  	<!-- Audio -->
+  	<audio id="audio" src="">
+    	Your browser does not support audio!
+  	</audio>
+	</div>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+body {
+  background-color: #008080;
+}
+
+.move-down {
+  margin-top: 60px;
+}
+
+a, a:link, a:hover, a:visited, a:active {
+  text-decoration: none;
+}
+
+a.white {
+  color: #ffffff;
+}
+
+.btn-block {
+  padding: 5px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.item {
+  min-height: 63px;
+  padding: 15px;
+  text-align: justify;
+}
+
+footer {
+  margin: 60px 0 30px 0;
+}
+
+.error {
+  margin: 30px 0;
+  color: #ff0000;
+}

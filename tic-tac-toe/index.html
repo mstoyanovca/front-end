@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html >
+<head>
+	<meta charset="UTF-8">
+  	<title>Tic Tac Toe</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  	<link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel='stylesheet' href="https://fonts.googleapis.com/css?family=Indie+Flower|Yatra+One">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container" ng-app="app" ng-controller="MyController">
+  <!-- header -->
+  <div class="page-header text-center">
+    <h1>Tic Tac Toe</h1>
+  </div>
+  <!-- body -->
+  <!-- navbar -->
+  <nav class="navbar navbar-default" ng-cloak>
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-navbar-collapse" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          <img alt="Brand" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/721194/tictactoe.png">
+        </a>
+      </div>
+      <div class="collapse navbar-collapse" id="my-navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li ng-class="{dropdown: !playMode, disabled: playMode}">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Options <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#" ng-click="chooseMode(true)">Single player</a></li>
+              <li><a href="#" ng-click="chooseMode(false)">Two players</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#" ng-click="chooseMark('X')">Player 1 is "X"</a></li>
+              <li><a href="#" ng-click="chooseMark('O')">Player 1 is "O"</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class><p class="navbar-text">Player 1 mark: {{yourMark}}</p></li>
+          <li><p class="navbar-text">Player 1 score: {{yourScore}}</p></li>
+          <li><p ng-show="!singlePlayer" class="navbar-text">Player 2 score: {{player2Score}}</p></li>
+          <li><p ng-show="singlePlayer" class="navbar-text">Computer score: {{player2Score}}</p></li>
+          <li ng-show="!playMode"><button type="button" class="btn btn-default navbar-btn" ng-click="play()">Play</button></li>
+          <li ng-show="playMode"><button type="button" class="btn btn-default navbar-btn" ng-click="reset()">Reset</button></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+  <!-- notification -->
+  <div class="text-center notification" ng-cloak>
+    <h2 ng-show="!playMode">New Game</h4>
+    <h2 ng-show="playMode && !gameOver && yourTurn">Player 1:</h4>
+    <h2 ng-show="playMode && !gameOver && !yourTurn && !singlePlayer">Player 2:</h4>
+    <h2 ng-show="playMode && !gameOver && !yourTurn && singlePlayer">Computer:</h4>
+  </div>
+  <!-- board -->
+  <div class="board" ng-cloak>
+    	<div ng-repeat="i in [0, 1, 2]">
+      		<div ng-repeat="j in [0, 1, 2]" ng-click="mark(i, j)" ng-class="cellClass[i][j]">
+        		<span ng-show="cell[i][j] === 0"></span>
+        		<span ng-show="cell[i][j] === 1  && yourMark === 'X' || cell[i][j] === 2 && yourMark === 'O'">X</span>
+        		<span ng-show="cell[i][j] === 2 && yourMark === 'X' || cell[i][j] === 1 && yourMark === 'O'">O</span>
+      		</div>
+    	</div>
+  	</div>
+  	<!-- footer -->
+  	<footer>
+    	<hr>
+    	<p class="text-center text-muted">Written by <a class="author" href="https://www.linkedin.com/in/martin-stoyanov-72845449" target="_blank">Martin Stoyanov</a>, October 2016</p>
+  	</footer>
+	</div>    <!-- end of .container -->
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="js/index.js"></script>
+</body>
+</html>
