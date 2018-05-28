@@ -1,0 +1,31 @@
+<!-- Article search form -->
+<form class="row center" (ngSubmit)="onSubmit()" #searchForm="ngForm">
+	<div class="form-group col-md-4 offset-md-3">
+		<label for="topic" class="sr-only">Search for an article</label> 
+		<input type="text" id="topic" name="topic" placeholder="Search for an article" class="form-control" [(ngModel)]="topic" [ngbTypeahead]="suggestions$">
+		<div *ngIf="searching"><i class="fas fa-sync-alt"></i> Searcing ...</div>
+		<div *ngIf="noSuggestions"><i class="fas fa-times"></i> No suggestions</div>
+	</div>
+	<div class="col-md-2">
+		<button type="submit" class="btn btn-primary btn-block">Search</button>
+	</div>
+</form>
+
+<!-- Search results list-->
+<div class="row move-down">
+	<div class="col-md-8 offset-md-2">
+		<ul>
+			<li *ngFor="let page of pages">
+    			<div class="card item">
+            		<a href="http://en.wikipedia.org/w/index.php?curid={{page.pageid}}" target="_blank">
+              			<h4><i>{{page.title}}</i></h4>
+            		</a>
+            		<p>{{page.extract}}</p>
+          		</div>
+        	</li>
+      	</ul>
+    </div>
+</div>  
+
+<!-- Error field -->
+<div *ngIf="error" class="col-md-6 offset-md-3 alert alert-danger"><i class="fas fa-exclamation"></i> Network error</div>

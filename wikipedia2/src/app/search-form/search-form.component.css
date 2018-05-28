@@ -1,0 +1,18 @@
+.move-down {
+  margin-top: 60px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+	margin-bottom: 15px;
+}
+
+.item {
+  min-height: 63px;
+  padding: 15px;
+  text-align: justify;
+}

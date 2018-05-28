@@ -1,0 +1,15 @@
+.move-down {
+  margin-top: 60px;
+}
+
+a, a:link, a:hover, a:visited, a:active {
+  text-decoration: none;
+}
+
+a.white {
+  color: #ffffff;
+}
+
+footer {
+  margin: 60px 0 30px 0;
+}

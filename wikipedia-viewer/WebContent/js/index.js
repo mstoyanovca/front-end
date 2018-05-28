@@ -1,6 +1,5 @@
 var app = angular.module("app", ['ui.bootstrap']);
 app.controller("Ctrl", function(articleFactory, suggestionFactory) {
-  // change to this later
   var self = this;
   self.title = "";
   self.articles = {};

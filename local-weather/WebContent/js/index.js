@@ -26,7 +26,7 @@ $(document).ready(function() {
       $("#description").text(json.weather[0].main);
       var iconURL = "http://openweathermap.org/img/w/" + json.weather[0].icon + ".png";
       $("#icon").attr("src", iconURL);
-    }).error(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function(jqXHR, textStatus, errorThrown) {
       alert(jqXHR.responseText);
     });
   };

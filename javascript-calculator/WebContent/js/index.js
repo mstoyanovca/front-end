@@ -20,6 +20,7 @@ function allClear() {
 }
 
 function calculate() {
+  if(equation.length == 0) return;
   var result = 0;
   try {
     result = eval(equation);
