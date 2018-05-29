@@ -1,49 +1,50 @@
 html {
-  position: relative;
-  min-height: 100%;
+	position: relative;
+	min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+	margin-bottom: 60px;
 }
 
 .container-fluid {
-  padding: 0;
+	padding: 0;
 }
 
 h1 {
-  font-family: Lemonada, Monospace;
+	margin-top: 60px;
+	font-family: Lemonada, Monospace;
 }
 
 .error {
-  color: red;
+	color: red;
 }
 
 .weather {
-  font-size: 200%;
+	font-size: 200%;
 }
 
 #location {
-  margin-top: 60px;
+	margin-top: 60px;
 }
 
 #units {
-  color: #ff8000;
+	color: #ff8000;
 }
 
 #units:hover {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 img {
-  margin-bottom: 60px;
+	margin-bottom: 60px;
 }
 
 footer {
-  position: absolute;
-  width: 100%;
-  height: 60px;
-  padding-top: 20px;
-  bottom: 0;
-  background-color: #f5f5f5;
+	position: absolute;
+	width: 100%;
+	height: 60px;
+	padding-top: 20px;
+	bottom: 0;
+	background-color: #f5f5f5;
 }
