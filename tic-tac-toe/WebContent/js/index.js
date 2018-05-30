@@ -301,7 +301,7 @@ angular.module('app', []).controller('MyController', ['$scope', '$timeout', func
     /* create an array of states with  (9 - moves) empty cells
     left; those are ALL good candidates for a next move, not
     only the first/last one, that minimax would normally return;
-    gives the game more humane behaviour; */
+    gives the game more humane behavior; */
     var bestMoves = [];
     for(var k = 0; k < maxScoreMoves.length; k++) {
       var n = 0;
