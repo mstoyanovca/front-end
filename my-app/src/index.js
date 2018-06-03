@@ -8,10 +8,25 @@ var height = 50;
 var speed = 50;
 var pause = false;
 var generation = 0;
-var cell = []; // the game board
+var cell = [];  // the game board
 var timer;
+var link = "https://www.math.cornell.edu/~lipa/mec/lesson6.html";
 
-class MyNavBar extends React.Component {
+class App extends Component {
+	render() {
+	    return (
+	    	<div>
+	        	<PageHeader className="text-center">Game of Life</PageHeader>
+	        	<GameNavBar />
+	        	<Board />
+	        	<Well><i>The cells in light red are younger, dark red are older. Enjoy!</i></Well>
+	        </div>
+	    );
+	}
+}
+
+class GameNavBar extends React.Component {
+	
 	redraw() {
 	    pause = true;
 	    clearTimeout(timer);
@@ -27,6 +42,7 @@ class MyNavBar extends React.Component {
 	    }
 	    refresh();
 	}
+	
 	handleSelect(selectedKey) {
 	    switch (selectedKey) {
 	        case 1.1:
@@ -45,17 +61,17 @@ class MyNavBar extends React.Component {
 	        	this.redraw();
 	        	break;
 	        case 1.4:
-	        	speed = 200; // slow
+	        	speed = 200;  // slow
 	        	break;
 	        case 1.5:
-	        	speed = 100; // medium
+	        	speed = 100;  // medium
 	        	break;
 	        case 1.6:
-	        	speed = 50; // fast
+	        	speed = 50;  // fast
 	        	break;
 	        case 2:
 	        	pause = false;
-	        	// play(); // run
+	        	play();  // run
 	        	break;
 	        case 3:
 	        	pause = true;  // pause
@@ -66,23 +82,24 @@ class MyNavBar extends React.Component {
 	        	break;
 	    	}
 	}
+	
 	render() {
 	    return (
 	    	<Navbar>
 	    	    <Navbar.Header>
 	    		    <Navbar.Brand>
-	    	            <a href="https://www.math.cornell.edu/~lipa/mec/lesson6.html" target="_blank">Game of Life</a>
+	    	            <a href={link} target="_blank">Game of Life</a>
 	    	        </Navbar.Brand>
 	    	    </Navbar.Header>
-	    	    <Nav bsStyle="pills" onSelect={e => this.handleSelect(e)}>
+	    	    <Nav onSelect={e => this.handleSelect(e)}>
 	    	        <NavDropdown eventKey={1} title="Options" id="basic-nav-dropdown">
 	    	            <MenuItem eventKey={1.1}>Size: 50x30</MenuItem>
 	    	            <MenuItem eventKey={1.2}>Size: 70x50</MenuItem>
 	    	            <MenuItem eventKey={1.3}>Szie: 100x80</MenuItem>
 	    	            <MenuItem divider />
-	    	            <MenuItem eventKey={1.4}>Sim speed: Slow</MenuItem>
-	    	            <MenuItem eventKey={1.5}>Sim speed: Medium</MenuItem>
-	    	            <MenuItem eventKey={1.6}>Sim speed: Fast</MenuItem>
+	    	            <MenuItem eventKey={1.4}>Speed: Slow</MenuItem>
+	    	            <MenuItem eventKey={1.5}>Speed: Medium</MenuItem>
+	    	            <MenuItem eventKey={1.6}>Speed: Fast</MenuItem>
 	    	        </NavDropdown>
 	    	        <NavItem eventKey="2" href="#"><span className="glyphicon glyphicon-play" aria-hidden="true">Run</span></NavItem>
 	    	        <NavItem eventKey="3" href="#"><span className="glyphicon glyphicon-pause" aria-hidden="true">Pause</span></NavItem>
@@ -93,28 +110,30 @@ class MyNavBar extends React.Component {
 	    );
 	}
 }
-  
-var Board = React.Component({
-  displayName: "Board",
-  getInitialState: function getInitialState() {
-    for (var i = 0; i < height; i++) {
-      cell[i] = [];
-      for (var j = 0; j < width; j++) {
-        cell[i][j] = { id: j + i * width, class: "cell-dead" };
-      }
-    }
-    return {};
-  },
-  render: function render() {
-    var _this = this;
-    return React.createElement("div", { className: "board" }, this.props.cell.map(function (row, i) {
-        return React.createElement("div", { className: "my-row" }, row.map(function (column, j) {
-            return React.createElement("div", { id: j + i * width, key: j + i * width, className: _this.props.cell[i][j].class });
-        }));
-    }));
-  }
-});
 
+class Board extends React.Component {
+	
+	  initializeBoard() {
+		var cells = [];
+	    for (var i = 0; i < height; i++) {
+	      cells[i] = [];
+	      for (var j = 0; j < width; j++) {
+	        cells[i][j] = { id: j + i * width, class: "cell-dead" };
+	      }
+	    }
+	    return cells;
+	  }
+	  
+	  render() {
+		  const cells = this.initializeBoard();
+		  return (
+		      <div className="board">
+		        {cells.map(row => <div key={row[0].id} className="my-row">{row.map(cell => <div id={cell.id} key={cell.id} className={cell.class}>{cell.id}</div>)}</div>)}
+		      </div>
+		  );
+	  }
+}
+  
 function play() {
   if (generation === 0) {
     generation++;
@@ -141,11 +160,12 @@ function play() {
       nextGeneration();
     }, speed);
   }
+  
   // recursive function:
   function nextGeneration() {
     generation++;
     // don't modify the board, till all iterations are over:
-    var cellCopy = JSON.parse(JSON.stringify(cell)); // deep copy
+    var cellCopy = JSON.parse(JSON.stringify(cell));  // deep copy
     for (var i = 0; i < height; i++) {
       for (var j = 0; j < width; j++) {
         var status = getStatus(i, j);  // dead or live
@@ -175,6 +195,7 @@ function play() {
       }, speed);
     }
   }
+  
   function getStatus(i, j) {
     // the same here:
     // if(cell[i][j].class.startsWith("cell-dead")) {
@@ -184,6 +205,7 @@ function play() {
       return "live";
     }
   }
+  
   function getCount(m, n) {
     var count = 0;
     // check all adjacent cells:
@@ -202,28 +224,8 @@ function play() {
   }
 }
 
-class App extends Component {
-	  render() {
-	    return (
-	      <div>
-	        <PageHeader className="text-center">Game of Life</PageHeader>
-	        <MyNavBar />
-	        <Well><i>The cells in light red are younger, dark red are older. Enjoy!</i></Well>
-	      </div>
-	    );
-	  }
-	}
-
 function refresh() {
 	ReactDOM.render(<App />, document.getElementById('root'));
-	// <Board cell=cell></Board>
 }
 
 refresh();
-
-
-
-
-
-
-
