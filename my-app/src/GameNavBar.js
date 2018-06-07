@@ -48,7 +48,7 @@ export class GameNavBar extends Component {
 	    	            <a href={link} target="_blank">Game of Life</a>
 	    	        </Navbar.Brand>
 	    	    </Navbar.Header>
-	    	    <Nav onSelect={e => this.handleSelect(e)}>
+	    	    <Nav onSelect={(e) => this.handleSelect(e)}>
 	    	        <NavDropdown eventKey={1} id="dropdown" title="Options">
 	    	            <MenuItem eventKey={1.1}>Size: 30x50</MenuItem>
 	    	            <MenuItem eventKey={1.2}>Size: 50x70</MenuItem>

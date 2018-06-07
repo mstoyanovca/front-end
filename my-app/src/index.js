@@ -109,12 +109,12 @@ class App extends Component {
 	
 	render() {
 	    return (
-	    	<React.StrictMode>
+	    	<div>
 	        	<PageHeader className="text-center">Game of Life</PageHeader>
 	        	<GameNavBar generation={this.state.generation} changeSize={this.changeSize} changeSpeed={this.changeSpeed} play={this.play} isPause={this.isPause} clear={this.clear} />
-	        	<Board cells = {this.state.cells} />
+	        	<Board cells={this.state.cells} />
 	        	<Well><i>The cells in light red are younger, the dark red ones are older. Enjoy!</i></Well>
-	        </React.StrictMode>
+	        </div>
 	    );
 	}
 }
