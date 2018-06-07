@@ -1,231 +1,142 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import {PageHeader, Navbar, Nav, NavDropdown, MenuItem, NavItem, Well} from 'react-bootstrap';
-
-var width = 70;
-var height = 50;
-var speed = 50;
-var pause = false;
-var generation = 0;
-var cell = [];  // the game board
-var timer;
-var link = "https://www.math.cornell.edu/~lipa/mec/lesson6.html";
+import {PageHeader, Well} from 'react-bootstrap';
+import {Board} from './Board.js';
+import {GameNavBar} from './GameNavBar';
 
 class App extends Component {
-	render() {
-	    return (
-	    	<div>
-	        	<PageHeader className="text-center">Game of Life</PageHeader>
-	        	<GameNavBar />
-	        	<Board />
-	        	<Well><i>The cells in light red are younger, dark red are older. Enjoy!</i></Well>
-	        </div>
-	    );
-	}
-}
-
-class GameNavBar extends React.Component {
 	
-	redraw() {
-	    pause = true;
-	    clearTimeout(timer);
-	    generation = 0;
-	    var myClass = "cell-dead";
-	    if (width === 100) myClass += " cell-small";
-	    cell = [];
-	    for (var i = 0; i < height; i++) {
-	        cell[i] = [];
-	        for (var j = 0; j < width; j++) {
-	        	cell[i][j] = { id: j + i * width, class: myClass };
-	        }
-	    }
-	    refresh();
+	constructor(props) {
+        super(props);
+        this.state = {width: 70, height: 50, speed: 100, pause: false, generation: 0, cells: this.createEmptyBoard(70, 50)};
+        this.createEmptyBoard = this.createEmptyBoard.bind(this);
+        this.changeSize = this.changeSize.bind(this);
+        this.changeSpeed = this.changeSpeed.bind(this);
+        this.play = this.play.bind(this);
+        this.isPause = this.isPause.bind(this);
+        this.clear = this.clear.bind(this);
+        this.nextGeneration = this.nextGeneration.bind(this);
 	}
 	
-	handleSelect(selectedKey) {
-	    switch (selectedKey) {
-	        case 1.1:
-	            width = 50;
-	            height = 30;
-	            this.redraw();
-	            break;
-	        case 1.2:
-	        	width = 70;
-	        	height = 50;
-	        	this.redraw();
-	        	break;
-	        case 1.3:
-	        	width = 100;
-	        	height = 80;
-	        	this.redraw();
-	        	break;
-	        case 1.4:
-	        	speed = 200;  // slow
-	        	break;
-	        case 1.5:
-	        	speed = 100;  // medium
-	        	break;
-	        case 1.6:
-	        	speed = 50;  // fast
-	        	break;
-	        case 2:
-	        	pause = false;
-	        	play();  // run
-	        	break;
-	        case 3:
-	        	pause = true;  // pause
-	        	clearTimeout(timer);
-	        	break;
-	        case 4:
-	        	this.redraw();  // clear
-	        	break;
-	    	}
+	changeSize(width, height) {
+		this.setState({width: width, height: height, cells: this.createEmptyBoard(width, height)});
 	}
 	
-	render() {
-	    return (
-	    	<Navbar>
-	    	    <Navbar.Header>
-	    		    <Navbar.Brand>
-	    	            <a href={link} target="_blank">Game of Life</a>
-	    	        </Navbar.Brand>
-	    	    </Navbar.Header>
-	    	    <Nav onSelect={e => this.handleSelect(e)}>
-	    	        <NavDropdown eventKey={1} title="Options" id="basic-nav-dropdown">
-	    	            <MenuItem eventKey={1.1}>Size: 50x30</MenuItem>
-	    	            <MenuItem eventKey={1.2}>Size: 70x50</MenuItem>
-	    	            <MenuItem eventKey={1.3}>Szie: 100x80</MenuItem>
-	    	            <MenuItem divider />
-	    	            <MenuItem eventKey={1.4}>Speed: Slow</MenuItem>
-	    	            <MenuItem eventKey={1.5}>Speed: Medium</MenuItem>
-	    	            <MenuItem eventKey={1.6}>Speed: Fast</MenuItem>
-	    	        </NavDropdown>
-	    	        <NavItem eventKey="2" href="#"><span className="glyphicon glyphicon-play" aria-hidden="true">Run</span></NavItem>
-	    	        <NavItem eventKey="3" href="#"><span className="glyphicon glyphicon-pause" aria-hidden="true">Pause</span></NavItem>
-	    	        <NavItem eventKey="4" href="#"><span className="glyphicon glyphicon-stop" aria-hidden="true">Clear</span></NavItem>
-	    	        <NavItem eventKey="5" href="#">Generation: {generation}</NavItem>
-	    	    </Nav>
-	    	</Navbar>
-	    );
+	changeSpeed(speed) {
+		this.setState({speed: speed});
 	}
-}
-
-class Board extends React.Component {
 	
-	  initializeBoard() {
+	play() {
+		if (this.state.generation === 0) this.setState({generation: 1, cells: this.createRandomBoard(this.state.width, this.state.height)});
+		setTimeout(this.nextGeneration, this.state.speed);
+	}
+	
+	isPause(pause) {
+		this.setState({pause: pause})
+	}
+	
+	clear() {
+		this.setState({pause: true, generation: 0, cells: this.createEmptyBoard(this.state.width, this.state.height)});
+	}
+	
+	createEmptyBoard(width, height) {
 		var cells = [];
 	    for (var i = 0; i < height; i++) {
-	      cells[i] = [];
-	      for (var j = 0; j < width; j++) {
-	        cells[i][j] = { id: j + i * width, class: "cell-dead" };
-	      }
+	    	cells[i] = [];
+	        for (var j = 0; j < width; j++) {
+	        	cells[i][j] = { id: j + i * width, className: "cell-dead" };
+	        	if (width === 100) cells[i][j].className += " cell-small";
+	        }
 	    }
 	    return cells;
-	  }
-	  
-	  render() {
-		  const cells = this.initializeBoard();
-		  return (
-		      <div className="board">
-		        {cells.map(row => <div key={row[0].id} className="my-row">{row.map(cell => <div id={cell.id} key={cell.id} className={cell.class}>{cell.id}</div>)}</div>)}
-		      </div>
-		  );
-	  }
-}
-  
-function play() {
-  if (generation === 0) {
-    generation++;
-    // initialize the board randomly:
-    for (var i = 0; i < height; i++) {
-      for (var j = 0; j < width; j++) {
-        var r = Math.floor(Math.random() * 2 + 1);
-        switch (r) {
-          case 1:
-            cell[i][j].class = "cell-young";
-            break;
-          case 2:
-            cell[i][j].class = "cell-dead";
-            break;
-        }
-        if (width === 100) cell[i][j].class += " cell-small";
-      }
-    }
-    refresh();
-  }
-  // generations 2 and up:
-  if (!pause) {
-    timer = setTimeout(function () {
-      nextGeneration();
-    }, speed);
-  }
-  
-  // recursive function:
-  function nextGeneration() {
-    generation++;
-    // don't modify the board, till all iterations are over:
-    var cellCopy = JSON.parse(JSON.stringify(cell));  // deep copy
-    for (var i = 0; i < height; i++) {
-      for (var j = 0; j < width; j++) {
-        var status = getStatus(i, j);  // dead or live
-        var count = getCount(i, j);    // number of live neighbors
-        // game logic:
-        if (status === "live") {
-          if (count < 2 || count > 3) {
-            cellCopy[i][j].class = "cell-dead";
-          } else if (count === 2 || count === 3) {
-            // damned IE:
-            // if(cell[i][j].class.startsWith("cell-young")) {
-            if (/cell-young/.test(cell[i][j].class)) {
-              cellCopy[i][j].class = "cell-old";
-            }
-          }
-        } else if (status === "dead" && count === 3) {
-          cellCopy[i][j].class = "cell-young";
-        }
-        if (width === 100) cellCopy[i][j].class += " cell-small";
-      }
-    }
-    cell = cellCopy;
-    refresh();
-    if (!pause) {
-      timer = setTimeout(function () {
-        nextGeneration();
-      }, speed);
-    }
-  }
-  
-  function getStatus(i, j) {
-    // the same here:
-    // if(cell[i][j].class.startsWith("cell-dead")) {
-    if (/cell-dead/.test(cell[i][j].class)) {
-      return "dead";
-    } else {
-      return "live";
-    }
-  }
-  
-  function getCount(m, n) {
-    var count = 0;
-    // check all adjacent cells:
-    for (var i = m - 1; i <= m + 1; i++) {
-      for (var j = n - 1; j <= n + 1; j++) {
-        // make sure you are within the board:
-        if (i >= 0 && j >= 0 && i < height && j < width) {
-          // don't count yourself:
-          if (i !== m || j !== n) {
-            if (getStatus(i, j) === "live") count++;
-          }
-        }
-      }
-    }
-    return count;
-  }
+	}
+	
+	createRandomBoard(width, height) {
+		var cells = [];
+		for (var i = 0; i < height; i++) {
+			cells[i] = [];
+			for (var j = 0; j < width; j++) {
+				var r = Math.floor(Math.random() * 2 + 1);
+				switch (r) {
+				case 1:
+					cells[i][j] = {id: j + i * width, className: "cell-young"};
+					break;
+				case 2:
+					cells[i][j] = {id: j + i * width, className: "cell-dead"};
+					break;
+				default:
+					console.log("Error");
+				}
+				if (width === 100) cells[i][j].className += " cell-small";
+			}
+		}
+		return cells;
+	}
+	
+	nextGeneration() {
+		if(this.state.pause) return;
+		const {width, height, cells, speed, pause, generation} = this.state;
+		this.setState({generation: generation + 1});
+		// don't modify the board, till all iterations are over:
+		var cellsCopy = JSON.parse(JSON.stringify(cells));  // deep copy
+		for (var i = 0; i < height; i++) {
+			for (var j = 0; j < width; j++) {
+				// console.log("cells[" + i + "][" + j + "] = " + JSON.stringify(cells[i][j]));
+				var status = this.getStatus(cells[i][j].className);  // "dead" or "alive"
+				// console.log("status = " + status);
+				var count = this.getCount(i, j);    // number of live neighbors
+				// game logic:
+				if (status === "alive") {
+					if (count < 2 || count > 3) {
+						cellsCopy[i][j].className = "cell-dead";
+					} else if (count === 2 || count === 3) {
+						if (/cell-young/.test(cells[i][j].className)) {
+							cellsCopy[i][j].className = "cell-old";
+						}
+					}
+				} else if (status === "dead" && count === 3) {
+					cellsCopy[i][j].className = "cell-young";
+				}
+				if (this.state.width === 100) cellsCopy[i][j].className += " cell-small";
+			}
+		}
+		this.setState({cells: cellsCopy});
+		setTimeout(this.nextGeneration, speed);
+	}
+	
+	getStatus(className) {
+		if (className.includes("cell-dead")) {
+			return "dead";
+		} else  {
+			return "alive";
+		}
+	}
+	
+	getCount(m, n) {
+		var count = 0;
+		// check all adjacent cells:
+		for (var i = m - 1; i <= m + 1; i++) {
+			for (var j = n - 1; j <= n + 1; j++) {
+				// make sure you are within the board, don't count yourself:
+				if (i >= 0 && j >= 0 && i < this.state.height && j < this.state.width && !(i === m && j === n) && this.getStatus(this.state.cells[i][j].className) === "alive") {
+						count++;
+				}
+			}
+		}
+		return count;
+	}
+	
+	render() {
+	    return (
+	    	<React.StrictMode>
+	        	<PageHeader className="text-center">Game of Life</PageHeader>
+	        	<GameNavBar generation={this.state.generation} changeSize={this.changeSize} changeSpeed={this.changeSpeed} play={this.play} isPause={this.isPause} clear={this.clear} />
+	        	<Board cells = {this.state.cells} />
+	        	<Well><i>The cells in light red are younger, the dark red ones are older. Enjoy!</i></Well>
+	        </React.StrictMode>
+	    );
+	}
 }
 
-function refresh() {
-	ReactDOM.render(<App />, document.getElementById('root'));
-}
-
-refresh();
+ReactDOM.render(<App />, document.getElementById('root'));
