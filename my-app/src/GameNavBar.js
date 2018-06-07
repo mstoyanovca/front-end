@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {PageHeader, Navbar, Nav, NavDropdown, MenuItem, NavItem, Well} from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown, MenuItem, NavItem} from 'react-bootstrap';
 
 var link = "https://www.math.cornell.edu/~lipa/mec/lesson6.html";
 
-export class GameNavBar extends React.Component {
+export class GameNavBar extends Component {
 	
 	handleSelect(selectedKey) {
 	    switch (selectedKey) {
@@ -27,13 +27,13 @@ export class GameNavBar extends React.Component {
 	        	break;
 	        case 2:
 	        	this.props.isPause(false);
-	        	this.props.play();  // run
+	        	this.props.play();         // run
 	        	break;
 	        case 3:
 	        	this.props.isPause(true);  // pause
 	        	break;
 	        case 4:
-	        	this.props.clear();  // clear
+	        	this.props.clear();        // clear
 	        	break;
 	        default:
 	        	console.log("Error");
