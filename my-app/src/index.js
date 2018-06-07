@@ -75,30 +75,21 @@ class App extends Component {
 	createNextGenCells(width, height, cells) {
 		// don't modify the board, till all iterations are over:
 		var cellsCopy = JSON.parse(JSON.stringify(cells));  // deep copy
-		
 		for (var i = 0; i < height; i++) {
 			for (var j = 0; j < width; j++) {
 				var count = this.getCount(i, j, cells);  // number of live neighbors
-				
-				
 				// game logic:
 				if (count < 2 || count > 3) {
 					cellsCopy[i][j].className = "cell-dead";
+				} else {
+					if (cells[i][j].className.includes("cell-young")) cellsCopy[i][j].className = "cell-old";
 				}
-				
-				if ((count === 2 || count === 3) && cells[i][j].className.includes("cell-young")) {
-					cellsCopy[i][j].className = "cell-old";
-				} 
-				
-				if (cells[i][j].className.includes("cell-dead") && count === 3) {
+				if (count === 3 && cells[i][j].className.includes("cell-dead")) {
 					cellsCopy[i][j].className = "cell-young";
 				}
-				
-				
-				if (this.state.width === 100) cellsCopy[i][j].className += " cell-small";
+				if (width === 100) cellsCopy[i][j].className += " cell-small";
 			}
 		}
-		
 		return cellsCopy;
 	}
 	
