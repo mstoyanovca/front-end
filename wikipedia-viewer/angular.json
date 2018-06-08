@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "wikipedia-viewer-angular6": {
+    "wikipedia-viewer": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/wikipedia-viewer-angular6",
+            "outputPath": "dist/wikipedia-viewer",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "wikipedia-viewer-angular6:build"
+            "browserTarget": "wikipedia-viewer:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "wikipedia-viewer-angular6:build:production"
+              "browserTarget": "wikipedia-viewer:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "wikipedia-viewer-angular6:build"
+            "browserTarget": "wikipedia-viewer:build"
           }
         },
         "test": {
@@ -95,7 +95,7 @@
         }
       }
     },
-    "wikipedia-viewer-angular6-e2e": {
+    "wikipedia-viewer-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -103,7 +103,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "wikipedia-viewer-angular6:serve"
+            "devServerTarget": "wikipedia-viewer:serve"
           }
         },
         "lint": {
@@ -118,5 +118,5 @@
       }
     }
   },
-  "defaultProject": "wikipedia-viewer-angular6"
+  "defaultProject": "wikipedia-viewer"
 }
