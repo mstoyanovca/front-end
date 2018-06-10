@@ -9,73 +9,34 @@ export default class Dungeon extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {dungeon: 0, cells: this.createBoard()};
-	    this.createDungeon = this.createDungeon.bind(this);
+	    //this.state = {dungeon: 0, cells: this.createBoard()};
+	    // this.createDungeon = this.createDungeon.bind(this);
+	    //this.drawChambers = this.drawChambers.bind(this);
 	}
 	
 	componentDidMount() {
 		window.addEventListener('keydown', this.handleKeyDown);
-		this.createDungeon();
 	}
 	  
 	componentWillUnmount() {
 		window.removeEventListener('keydown', this.handleKeyDown);
 	}
 	
-	createBoard() {
-		var cells = [];
-		for (var i = 0; i < boardHeight; i++) {
-			cells[i] = [];
-			for (var j = 0; j < boardWidth; j++) {
-				cells[i][j] = { id: j + i * boardWidth, row: i, column: j, className: "cell" };
-			}
-	    }
-	    return cells;
-	}
+		// createContent();
 	
-	createDungeon() {
-		console.log
-		const {dungeon, cells} = this.state;
-		// chamber top left corner coordinates:
-		var x, y = 0;
-		var chamberWidth, chamberHeight = 0;
-		var chambers = [];
-		var doors = [];
-		  
-		// 20 gives good board density:
-		for (var i = 0; i < 20; i++) {
-			createChamber();
-		}
-		  
-		createContent();
-		  
-		function createChamber() {
-			// random size from 6 to 18 by 6 to 18 cells:
-			chamberWidth = Math.floor(Math.random() * 13) + 6;
-			chamberHeight = Math.floor(Math.random() * 13) + 6;
-			// position the first chamber randomly in the top left corner:
-			if (createFirst()) return;
-			// for chambers two and up, attach to an existing chamber:
-			for (var i = 0; i < chambers.length; i++) {
+	createChamber() {
+		// random size from 6 to 18 by 6 to 18 cells:
+		var chamberWidth = Math.floor(Math.random() * 13) + 6;
+		var chamberHeight = Math.floor(Math.random() * 13) + 6;
+		// position the first chamber randomly in the top left corner:
+		// for chambers two and up, attach to an existing chamber:
+		/*for (var i = 0; i < chambers.length; i++) {
 				if (attachRight(chambers[i])) return;
 				if (attachBottom(chambers[i])) return;
-			}
-		}
+			}*/
+	}
 		  
-		function createFirst() {
-			if (chambers.length === 0) {
-				// position the first chamber randomly in the top left corner:
-				x = Math.floor(Math.random() * 11);
-				y = Math.floor(Math.random() * 11);
-				chambers.push({ x: x, y: y, width: chamberWidth, height: chamberHeight });
-				drawChamber();
-				return true;
-			} else {
-				return false;
-			}
-		}
-		  
-		function attachRight(chamber) {
+		/*attachRight(chamber) {
 			// try to attach to the right of an existing chamber:
 		    x = chamber.x + chamber.width + 1;
 		    var possibleYs = [];
@@ -89,7 +50,7 @@ export default class Dungeon extends Component {
 		    	y = possibleYs[index];
 		    	// create a door between the chambers:
 		    	var overlappingYs = [];
-		    	for (var i = y; i < y + chamberHeight; i++) {
+		    	for (i = y; i < y + chamberHeight; i++) {
 		    		if (i >= chamber.y && i < chamber.y + chamber.height) {
 		    			overlappingYs.push(i);
 		    		}
@@ -103,9 +64,9 @@ export default class Dungeon extends Component {
 		    	return true;
 		    }
 		    return false;
-		}
+		}*/
 		  
-		function attachBottom(chamber) {
+		/*attachBottom(chamber) {
 			// try to attach to the bottom of an existing chamber:
 		    y = chamber.y + chamber.height + 1;
 		    var possibleXs = [];
@@ -119,7 +80,7 @@ export default class Dungeon extends Component {
 		    	x = possibleXs[index];
 		    	// create a door between the chambers:
 		    	var overlappingXs = [];
-		    	for (var i = x; i < x + chamberWidth; i++) {
+		    	for (i = x; i < x + chamberWidth; i++) {
 		    		if (i >= chamber.x && i < chamber.x + chamber.width) {
 		    			overlappingXs.push(i);
 		    		}
@@ -134,9 +95,9 @@ export default class Dungeon extends Component {
 		      return true;
 		    }
 		    return false;
-		}
+		}*/
 		
-		function checkAvailability(x, y, width, height) {
+		/*checkAvailability(x, y, width, height) {
 			// check if the cells that are going to be taken are free:
 		    if (x < 0 || x + width > boardWidth || y < 0 || y + height > boardHeight) return false;
 		    for (var i = y; i < y + height; i++) {
@@ -147,17 +108,9 @@ export default class Dungeon extends Component {
 		    	}
 		    }
 		    return true;
-		}
+		}*/
 		
-		function drawChamber() {
-			for (var i = y; i < y + chamberHeight; i++) {
-				for (var j = x; j < x + chamberWidth; j++) {
-					cells[i][j].className = "cell cell-white";
-				}
-		    }
-		}
-		
-		function createContent() {
+		/*createContent() {
 			var whites = [];
 		    for (var i = 0; i < boardWidth; i++) {
 		    	for (var j = 0; j < boardHeight; j++) {
@@ -182,13 +135,13 @@ export default class Dungeon extends Component {
 		    	whites.splice(index, 1);
 		    }
 		    // create the health items:
-		    for (var i = 0; i < 5; i++) {
+		    for (i = 0; i < 5; i++) {
 		    	index = Math.floor(Math.random() * whites.length);
 		    	whites[index].className = "cell cell-green";
 		    	whites.splice(index, 1);
 		    }
 		    // create the enemies:
-		    for (var i = 0; i < 5; i++) {
+		    for (i = 0; i < 5; i++) {
 		    	index = Math.floor(Math.random() * whites.length);
 		    	whites[index].className = "cell cell-red";
 		    	whites.splice(index, 1);
@@ -196,8 +149,8 @@ export default class Dungeon extends Component {
 		    // create the boss:
 		    if (dungeon === 4) {
 		    	var bosses = [{}];
-		    	for (var i = 0; i < boardWidth - 1; i++) {
-		    		for (var j = 0; j < boardHeight - 1; j++) {
+		    	for (i = 0; i < boardWidth - 1; i++) {
+		    		for (j = 0; j < boardHeight - 1; j++) {
 		    			// find a square of four free cells:
 		    			if (this.state.cells[i][j].className === "cell cell-white" && this.state.cells[i][j + 1].className === "cell cell-white" && this.state.cells[i + 1][j].className === "cell cell-white" && this.state.cells[i + 1][j + 1].className === "cell cell-white") {
 		    				bosses.push([this.state.cells[i][j], this.state.cells[i][j + 1], this.state.cells[i + 1][j], this.state.cells[i + 1][j + 1]]);
@@ -205,41 +158,46 @@ export default class Dungeon extends Component {
 		    		}
 		    	}
 		    	// pick a square randomly:
-		    	var index = Math.floor(Math.random() * bosses.length);
-		    	for (var i = 0; i < bosses[index].length; i++) {
+		    	index = Math.floor(Math.random() * bosses.length);
+		    	for (i = 0; i < bosses[index].length; i++) {
 		    		bosses[index][i].className = "cell cell-boss";
 		    	}
 		    }
-		}
-	}
+		}*/
 	
-	/*handleKeyDown(event) {
+	handleKeyDown(event) {
 		// prevent page scrolling from the arrow keys:
 	    event.preventDefault();
 	    switch (event.keyCode) {
 	    	case 37:
 	    		// left arrow
-	    		moveLeft();
+	    		console.log("move left");
+	    		// moveLeft();
 	    		break;
 	    	case 38:
 	    		// up arrow
-	    		moveUp();
+	    		console.log("move up");
+	    		// moveUp();
 	    		break;
 	    	case 39:
 	    		// right arrow
-	    		moveRight();
+	    		console.log("move right");
+	    		// moveRight();
 	    		break;
 	    	case 40:
 	    		// down arrow
-	    		moveDown();
+	    		console.log("move down");
+	    		// moveDown();
 	    		break;
+	    	default:
+	    		// do nothing
 	    }
-	}*/
+	}
 	
 	render() {
 		return (
 			<div className="dungeon center-block">
-				{this.state.cells.map(row => <div className="my-row" key={row[0].id}>{row.map(cell => <div className="cell" key={cell.id}></div>)}</div>)}
+				{this.props.cells.map(row => <div className="my-row" key={row[0].id}>{row.map(cell => <div className={cell.className} key={cell.id}></div>)}</div>)}
 			</div>
 		);
 	}
