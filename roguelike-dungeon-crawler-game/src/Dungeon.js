@@ -1,41 +1,18 @@
 import React, { Component } from 'react';
 import './css/Dungeon.css';
 
-// board size in cells:
-var boardWidth = 80;
-var boardHeight = 80;
-
 export default class Dungeon extends Component {
 	
-	constructor(props) {
-		super(props);
-	    //this.state = {dungeon: 0, cells: this.createBoard()};
-	    // this.createDungeon = this.createDungeon.bind(this);
-	    //this.drawChambers = this.drawChambers.bind(this);
-	}
-	
 	componentDidMount() {
-		window.addEventListener('keydown', this.handleKeyDown);
+		window.addEventListener('keydown', this.onKeyDown);
 	}
 	  
 	componentWillUnmount() {
-		window.removeEventListener('keydown', this.handleKeyDown);
+		window.removeEventListener('keydown', this.onKeyDown);
 	}
 	
 		// createContent();
 	
-	createChamber() {
-		// random size from 6 to 18 by 6 to 18 cells:
-		var chamberWidth = Math.floor(Math.random() * 13) + 6;
-		var chamberHeight = Math.floor(Math.random() * 13) + 6;
-		// position the first chamber randomly in the top left corner:
-		// for chambers two and up, attach to an existing chamber:
-		/*for (var i = 0; i < chambers.length; i++) {
-				if (attachRight(chambers[i])) return;
-				if (attachBottom(chambers[i])) return;
-			}*/
-	}
-		  
 		/*attachRight(chamber) {
 			// try to attach to the right of an existing chamber:
 		    x = chamber.x + chamber.width + 1;
@@ -165,7 +142,7 @@ export default class Dungeon extends Component {
 		    }
 		}*/
 	
-	handleKeyDown(event) {
+	onKeyDown = (event) => {
 		// prevent page scrolling from the arrow keys:
 	    event.preventDefault();
 	    switch (event.keyCode) {
