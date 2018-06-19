@@ -5,6 +5,8 @@ import Header from './Header';
 // board size in cells:
 const boardWidth = 80;
 const boardHeight = 80;
+// 20 gives good board density:
+const numberOfChambers = 20;
 
 export default class App extends Component {
 	
@@ -14,7 +16,7 @@ export default class App extends Component {
 	}
 	
 	componentDidMount() {
-		this.createDungeon();
+		this.createDungeon(this.state.cells);
 	}
 	
 	createEmptyBoard() {
@@ -22,64 +24,71 @@ export default class App extends Component {
 		for (var i = 0; i < boardHeight; i++) {
 			cells[i] = [];
 			for (var j = 0; j < boardWidth; j++) {
-				cells[i][j] = { id: j + i * boardWidth, row: i, column: j, className: "cell" };
+				cells[i][j] = {id: j + i * boardWidth, row: i, column: j, className: "cell"};
 			}
 	    }
 	    return cells;
 	}
 	
-	createDungeon() {
+	createDungeon(cells) {
 		var chambers = [];
 		var doors = [];
 		
-		// 20 gives good board density:
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < numberOfChambers; i++) {
 			if(i === 0) {
 				chambers.push(this.createChamber(true));
-				this.drawChambers(chambers, []);
+				cells = this.redrawBoard(chambers, doors, cells);
 			} else {
 				var chamber = this.createChamber(false);
-				var chamberWithDoor = this.attachToTheRight(chambers[i-1], chamber);
-				if(chamberWithDoor.chamber.x >= 0) {
-					chambers.push(chamberWithDoor.chamber);
-					doors.push(chamberWithDoor.door);
-					this.drawChambers(chambers, doors);
-					continue;
+				
+				for(var j = 0; j < i; j++) {
+					var chamberWithDoor = this.attachToTheRight(chambers[j], chamber, cells);
+					if(chamberWithDoor.chamber.x >= 0) {
+						chambers.push(chamberWithDoor.chamber);
+						doors.push(chamberWithDoor.door);
+						cells = this.redrawBoard(chambers, doors, cells);
+						break;
+					}
+					chamberWithDoor = this.attachToTheBottom(chambers[j], chamber, cells);
+					if(chamberWithDoor.chamber.y >= 0) {
+						chambers.push(chamberWithDoor.chamber);
+						doors.push(chamberWithDoor.door);
+						cells = this.redrawBoard(chambers, doors, cells);
+						break;
+					}
 				}
-				chamberWithDoor = this.attachToTheBottom(chambers[i-1], chamber);
-				if(chamberWithDoor.chamber.x >= 0) {
-					chambers.push(chamberWithDoor.chamber);
-					doors.push(chamberWithDoor.door);
-					this.drawChambers(chambers, doors);
-				}
+				console.log("i = " + i + ", j = " + j);
 			}
 		}
+		
+		this.setState({cells: cells});
 	}
 	
 	createChamber(isFirst) {
 		// random size from 6 to 18 by 6 to 18 cells:
 		var width = Math.floor(Math.random() * 13) + 6;
 		var height = Math.floor(Math.random() * 13) + 6;
+		
 		// chambers 2 and up to be positioned later:
 		var x = -1;
 		var y = -1;
 		
 		if(isFirst) {
 			// position the first chamber randomly in the top left corner:
-			x = Math.floor(Math.random() * 11);
+			x = Math.floor(Math.random() * 21);
 			y = Math.floor(Math.random() * 11);
 		}
 		
-		return { x: x, y: y, width: width, height: height };
+		return {x: x, y: y, width: width, height: height};
 	}
 	
-	attachToTheRight(previousChamber, chamber) {
+	attachToTheRight(previousChamber, chamber, cells) {
 	    // try to attach to the right of an existing chamber:
 	    chamber.x = previousChamber.x + previousChamber.width + 1;
 	    
 	    var possibleYs = [];
 	    for (var i = previousChamber.y - chamber.height + 1; i < previousChamber.y + previousChamber.height; i++) {
-	    	if (this.checkAvailability(chamber.x, i, chamber.width, chamber.height)) {
+	    	if (this.checkAvailability(chamber.x, i, chamber.width, chamber.height, cells)) {
 	    		possibleYs.push(i);
 	    	}
 	    }
@@ -100,17 +109,18 @@ export default class App extends Component {
 	    }
     	index = Math.floor(Math.random() * overlappingYs.length);
     	var door = { x: chamber.x - 1, y: overlappingYs[index] };
+    	console.log("door from right = " + JSON.stringify(door));
 	    
 	    return {chamber, door};
 	}
 	
-	attachToTheBottom(previousChamber, chamber) {
+	attachToTheBottom(previousChamber, chamber, cells) {
 		// try to attach to the bottom of an existing chamber:
 		chamber.y = previousChamber.y + previousChamber.height + 1;
 		
 	    var possibleXs = [];
-	    for (var i = previousChamber.x - chamber.width + 1; i < previousChamber.x + chamber.width; i++) {
-	    	if (this.checkAvailability(i, chamber.y, chamber.width, chamber.height)) {
+	    for (var i = previousChamber.x - chamber.width + 1; i < previousChamber.x + previousChamber.width; i++) {
+	    	if (this.checkAvailability(i, chamber.y, chamber.width, chamber.height, cells)) {
 	    		possibleXs.push(i);
 	    	}
 	    }
@@ -131,37 +141,40 @@ export default class App extends Component {
 	    }
 	    index = Math.floor(Math.random() * overlappingXs.length);
 	    var door = { x: overlappingXs[index], y: chamber.y - 1 };
+	    console.log("previousChamber = " + JSON.stringify(previousChamber));
+	    console.log("chamber = " + JSON.stringify(chamber));
+	    console.log("door from bottom = " + JSON.stringify(door));
 	    	
 	    return {chamber, door};
 	}
 	
-	checkAvailability(x, y, width, height) {
+	checkAvailability(x, y, width, height, cells) {
 		// make sure the new chamber is within the board:
 	    if (x < 0 || x + width > boardWidth || y < 0 || y + height > boardHeight) return false;
 	    
 	    // check if the cells that are going to be taken are free:
 	    for (var i = y; i < y + height; i++) {
 	    	for (var j = x; j < x + width; j++) {
-	    		if (this.state.cells[i][j].className.includes("cell-white")) return false;
+	    		if (cells[i][j].className.includes("cell-white")) return false;
 	    	}
 	    }
 	    
 	    return true;
 	}
 	
-	drawChambers(chambers, doors) {
-		var cellsCopy = JSON.parse(JSON.stringify(this.state.cells));
+	redrawBoard(chambers, doors, cells) {
 		chambers.forEach(c => {
 			for (var i = c.y; i < c.y + c.height; i++) {
 				for (var j = c.x; j < c.x + c.width; j++) {
-					cellsCopy[i][j].className += " cell-white";
+					cells[i][j].className += " cell-white";
 				}
 		    }
 		});
 		
-		doors.forEach(door => cellsCopy[door.y][door.x].className += " cell-white");
+		console.log("doors = " + JSON.stringify(doors));
+		doors.forEach(d => cells[d.y][d.x].className += " cell-white");
 		
-		this.setState({cells: cellsCopy});
+		return cells;
 	}
 	
 	render() {
