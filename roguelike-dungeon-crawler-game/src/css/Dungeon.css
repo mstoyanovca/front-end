@@ -7,7 +7,7 @@
   border-radius: 4px;
 }
 
-.my-row {
+.board-row {
   font-size: 0;
 }
 
@@ -21,31 +21,31 @@
   display: inline-block;
 }
 
-.cell-white {
+.empty {
   background-color: white;
 }
 
-.cell-green {
+.health {
   background-color: green;
 }
 
-.cell-red {
+.enemy {
   background-color: red;
 }
 
-.cell-blue {
+.cursor {
   background-color: blue;
 }
 
-.cell-yellow {
+.weapon {
   background-color: yellow;
 }
 
-.cell-purple {
+.stairs {
   background-color: purple;
 }
 
-.cell-boss {
+.boss {
   background-color: red;
 }
 

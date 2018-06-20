@@ -45,7 +45,7 @@ export default class Header extends Component {
 						<span><b>Attack:</b> {this.state.attack}</span>
 						<span><b>Level:</b> {this.state.level}</span>
 						<span><b>Next Level:</b> {this.state.xP} XP</span>
-						<span><b>Dungeon:</b>d {this.state.dungeon}</span>
+						<span><b>Dungeon:</b>{this.state.dungeon}</span>
 						<Button bsStyle="default" onClick={this.toggleDarkness()}>Toggle Darkness</Button>
 					</div>
 				</div>

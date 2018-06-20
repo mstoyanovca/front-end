@@ -7,16 +7,23 @@ const boardWidth = 80;
 const boardHeight = 80;
 // 20 gives good board density:
 const numberOfChambers = 20;
+var cursorX = 0;
+var cursorY = 0;
+var dungeon = 0;
 
 export default class App extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {cells: this.createEmptyBoard()};
+	    this.state = {cells: []};
 	}
 	
 	componentDidMount() {
-		this.createDungeon(this.state.cells);
+		var cells = this.createEmptyBoard();
+		cells = this.createDungeon(cells);
+		cells = this.createContent(cells);
+		
+		this.setState({cells: cells});
 	}
 	
 	createEmptyBoard() {
@@ -57,11 +64,10 @@ export default class App extends Component {
 						break;
 					}
 				}
-				console.log("i = " + i + ", j = " + j);
 			}
 		}
 		
-		this.setState({cells: cells});
+		return cells;
 	}
 	
 	createChamber(isFirst) {
@@ -109,7 +115,6 @@ export default class App extends Component {
 	    }
     	index = Math.floor(Math.random() * overlappingYs.length);
     	var door = { x: chamber.x - 1, y: overlappingYs[index] };
-    	console.log("door from right = " + JSON.stringify(door));
 	    
 	    return {chamber, door};
 	}
@@ -141,9 +146,6 @@ export default class App extends Component {
 	    }
 	    index = Math.floor(Math.random() * overlappingXs.length);
 	    var door = { x: overlappingXs[index], y: chamber.y - 1 };
-	    console.log("previousChamber = " + JSON.stringify(previousChamber));
-	    console.log("chamber = " + JSON.stringify(chamber));
-	    console.log("door from bottom = " + JSON.stringify(door));
 	    	
 	    return {chamber, door};
 	}
@@ -155,7 +157,7 @@ export default class App extends Component {
 	    // check if the cells that are going to be taken are free:
 	    for (var i = y; i < y + height; i++) {
 	    	for (var j = x; j < x + width; j++) {
-	    		if (cells[i][j].className.includes("cell-white")) return false;
+	    		if (cells[i][j].className.includes("empty")) return false;
 	    	}
 	    }
 	    
@@ -166,15 +168,82 @@ export default class App extends Component {
 		chambers.forEach(c => {
 			for (var i = c.y; i < c.y + c.height; i++) {
 				for (var j = c.x; j < c.x + c.width; j++) {
-					cells[i][j].className += " cell-white";
+					if(cells[i][j].className === "cell") cells[i][j].className += " empty";
 				}
 		    }
 		});
 		
-		console.log("doors = " + JSON.stringify(doors));
-		doors.forEach(d => cells[d.y][d.x].className += " cell-white");
+		doors.forEach(d => {
+			if(cells[d.y][d.x].className === "cell") cells[d.y][d.x].className += " empty"
+		});
 		
 		return cells;
+	}
+	
+	createContent(cells) {
+		var emptyCells = [];
+	    for (var i = 0; i < boardHeight; i++) {
+	    	for (var j = 0; j < boardWidth; j++) {
+	    		if (cells[i][j].className.includes("empty")) emptyCells.push(cells[i][j]);
+	    	}
+	    }
+	    
+	    // create the cursor:
+	    var index = Math.floor(Math.random() * emptyCells.length);
+	    cells[emptyCells[index].row][emptyCells[index].column].className += " cursor";
+	    // preserve the position of the cursor:
+	    cursorX = emptyCells[index].column;
+	    cursorY = emptyCells[index].row;
+	    emptyCells.splice(index, 1);
+	    
+	    // create the weapon:
+	    index = Math.floor(Math.random() * emptyCells.length);
+	    cells[emptyCells[index].row][emptyCells[index].column].className += " weapon";
+	    emptyCells.splice(index, 1);
+	    
+	    // create the stairs to the next dungeon:
+	    if (dungeon < 4) {
+	    	index = Math.floor(Math.random() * emptyCells.length);
+	    	cells[emptyCells[index].row][emptyCells[index].column].className += " stairs";
+	    	emptyCells.splice(index, 1);
+	    }
+	    
+	    // create the health items:
+	    for (i = 0; i < 5; i++) {
+	    	index = Math.floor(Math.random() * emptyCells.length);
+	    	cells[emptyCells[index].row][emptyCells[index].column].className += " health";
+	    	emptyCells.splice(index, 1);
+	    }
+	    
+	    // create the enemies:
+	    for (i = 0; i < 5; i++) {
+	    	index = Math.floor(Math.random() * emptyCells.length);
+	    	cells[emptyCells[index].row][emptyCells[index].column].className += " enemy";
+	    	emptyCells.splice(index, 1);
+	    }
+	    
+	    
+	    // create the boss:
+	    if (dungeon === 5) {
+	    	var bosses = [{}];
+	    	for (i = 0; i < boardHeight - 1; i++) {
+	    		for (j = 0; j < boardWidth - 1; j++) {
+	    			if (cells[i][j].className.includes("empty") && 
+	    				cells[i][j + 1].className.includes("empty") && 
+	    				cells[i + 1][j].className.includes("empty") && 
+	    				cells[i + 1][j + 1].className.includes("empty")) {
+	    					bosses.push([cells[i][j], cells[i][j + 1], cells[i + 1][j], cells[i + 1][j + 1]]);
+	    			}
+	    		}
+	    	}
+	    	// pick a square randomly:
+	    	index = Math.floor(Math.random() * bosses.length);
+	    	for (i = 0; i < bosses[index].length; i++) {
+	    		cells[bosses[index][i].row][bosses[index][i].column].className += " boss";
+	    	}
+	    }
+	    
+	    return cells;
 	}
 	
 	render() {
