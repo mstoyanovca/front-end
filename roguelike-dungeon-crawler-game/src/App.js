@@ -45,8 +45,9 @@ export default class App extends Component {
 		
 		for (let i = 0; i < numberOfChambers; i++) {
 			if(i === 0) {
-				chambers.push(this.createChamber(true));
-				cells = this.drawChamber(chambers, doors, cells);
+				let chamber = this.createChamber(true);
+				chambers.push(chamber);
+				cells = this.drawChamber(chamber, {x: chamber.x, y: chamber.y}, cells);
 			} else {
 				let chamber = this.createChamber(false);
 				
@@ -55,14 +56,15 @@ export default class App extends Component {
 					if(chamberWithDoor.chamber.x >= 0) {
 						chambers.push(chamberWithDoor.chamber);
 						doors.push(chamberWithDoor.door);
-						cells = this.drawChamber(chambers, doors, cells);
+						cells = this.drawChamber(chamberWithDoor.chamber, chamberWithDoor.door, cells);
 						break;
 					}
+					
 					chamberWithDoor = this.attachToTheBottom(chambers[j], chamber, cells);
 					if(chamberWithDoor.chamber.y >= 0) {
 						chambers.push(chamberWithDoor.chamber);
 						doors.push(chamberWithDoor.door);
-						cells = this.drawChamber(chambers, doors, cells);
+						cells = this.drawChamber(chamberWithDoor.chamber, chamberWithDoor.door, cells);
 						break;
 					}
 				}
@@ -166,18 +168,14 @@ export default class App extends Component {
 	    return true;
 	}
 	
-	drawChamber(chambers, doors, cells) {
-		chambers.forEach(c => {
-			for (let i = c.y; i < c.y + c.height; i++) {
-				for (let j = c.x; j < c.x + c.width; j++) {
-					if(cells[i][j].className === "cell") cells[i][j].className += " empty";
-				}
-		    }
-		});
-		
-		doors.forEach(d => {
-			if(cells[d.y][d.x].className === "cell") cells[d.y][d.x].className += " empty"
-		});
+	drawChamber(chamber, door, cells) {
+		for (let i = chamber.y; i < chamber.y + chamber.height; i++) {
+			for (let j = chamber.x; j < chamber.x + chamber.width; j++) {
+				if(cells[i][j].className === "cell") cells[i][j].className += " empty";
+			}
+	    }
+	
+		if(cells[door.y][door.x].className === "cell") cells[door.y][door.x].className += " empty"
 		
 		return cells;
 	}
