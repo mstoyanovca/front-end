@@ -2,35 +2,37 @@ import React, { Component } from 'react';
 import Dungeon from './Dungeon';
 import Header from './Header';
 
+const weapons = ["stick", "brass knuckles", "serrated dagger", "katana", "reaper's scythe", "large trout"];
+//tune the game here; you need 240 health points to beet the boss:
+const attackValues = [7, 26, 64, 88, 200, 300];  // per dungeon/weapon
 // board size in cells:
 const boardWidth = 80;
 const boardHeight = 80;
 // 20 gives good board density:
 const numberOfChambers = 20;
-var cursorX = 0;
-var cursorY = 0;
-var dungeon = 0;
+// xP - next level points; add 60 for each level;
 
 export default class App extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {cells: []};
+	    this.state = {health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, xP: 60, dungeon: 0, cells: [], cursor: {}};
+	    this.updateCells = this.updateCells.bind(this);
 	}
 	
 	componentDidMount() {
-		var cells = this.createEmptyBoard();
+		let cells = this.createEmptyBoard();
 		cells = this.createDungeon(cells);
-		cells = this.createContent(cells);
+		let cellsWithCursor = this.createContent(cells, this.state.dungeon);
 		
-		this.setState({cells: cells});
+		this.setState({cells: cellsWithCursor.cells, cursor: cellsWithCursor.cursor});
 	}
 	
 	createEmptyBoard() {
-		var cells = [];
-		for (var i = 0; i < boardHeight; i++) {
+		let cells = [];
+		for (let i = 0; i < boardHeight; i++) {
 			cells[i] = [];
-			for (var j = 0; j < boardWidth; j++) {
+			for (let j = 0; j < boardWidth; j++) {
 				cells[i][j] = {id: j + i * boardWidth, row: i, column: j, className: "cell"};
 			}
 	    }
@@ -38,29 +40,29 @@ export default class App extends Component {
 	}
 	
 	createDungeon(cells) {
-		var chambers = [];
-		var doors = [];
+		let chambers = [];
+		let doors = [];
 		
-		for (var i = 0; i < numberOfChambers; i++) {
+		for (let i = 0; i < numberOfChambers; i++) {
 			if(i === 0) {
 				chambers.push(this.createChamber(true));
-				cells = this.redrawBoard(chambers, doors, cells);
+				cells = this.drawChamber(chambers, doors, cells);
 			} else {
-				var chamber = this.createChamber(false);
+				let chamber = this.createChamber(false);
 				
-				for(var j = 0; j < i; j++) {
-					var chamberWithDoor = this.attachToTheRight(chambers[j], chamber, cells);
+				for(let j = 0; j < i; j++) {
+					let chamberWithDoor = this.attachToTheRight(chambers[j], chamber, cells);
 					if(chamberWithDoor.chamber.x >= 0) {
 						chambers.push(chamberWithDoor.chamber);
 						doors.push(chamberWithDoor.door);
-						cells = this.redrawBoard(chambers, doors, cells);
+						cells = this.drawChamber(chambers, doors, cells);
 						break;
 					}
 					chamberWithDoor = this.attachToTheBottom(chambers[j], chamber, cells);
 					if(chamberWithDoor.chamber.y >= 0) {
 						chambers.push(chamberWithDoor.chamber);
 						doors.push(chamberWithDoor.door);
-						cells = this.redrawBoard(chambers, doors, cells);
+						cells = this.drawChamber(chambers, doors, cells);
 						break;
 					}
 				}
@@ -72,12 +74,12 @@ export default class App extends Component {
 	
 	createChamber(isFirst) {
 		// random size from 6 to 18 by 6 to 18 cells:
-		var width = Math.floor(Math.random() * 13) + 6;
-		var height = Math.floor(Math.random() * 13) + 6;
+		let width = Math.floor(Math.random() * 13) + 6;
+		let height = Math.floor(Math.random() * 13) + 6;
 		
 		// chambers 2 and up to be positioned later:
-		var x = -1;
-		var y = -1;
+		let x = -1;
+		let y = -1;
 		
 		if(isFirst) {
 			// position the first chamber randomly in the top left corner:
@@ -92,14 +94,14 @@ export default class App extends Component {
 	    // try to attach to the right of an existing chamber:
 	    chamber.x = previousChamber.x + previousChamber.width + 1;
 	    
-	    var possibleYs = [];
-	    for (var i = previousChamber.y - chamber.height + 1; i < previousChamber.y + previousChamber.height; i++) {
+	    let possibleYs = [];
+	    for (let i = previousChamber.y - chamber.height + 1; i < previousChamber.y + previousChamber.height; i++) {
 	    	if (this.checkAvailability(chamber.x, i, chamber.width, chamber.height, cells)) {
 	    		possibleYs.push(i);
 	    	}
 	    }
 	    if (possibleYs.length > 0) {
-	    	var index = Math.floor(Math.random() * possibleYs.length);
+	    	let index = Math.floor(Math.random() * possibleYs.length);
 	    	chamber.y = possibleYs[index];
 	    } else {
 	    	chamber.x = -1;
@@ -107,14 +109,14 @@ export default class App extends Component {
 	    }
 	    
 	    // create a door between the chambers:
-	    var overlappingYs = [];
-	    for (i = chamber.y; i < chamber.y + chamber.height; i++) {
+	    let overlappingYs = [];
+	    for (let i = chamber.y; i < chamber.y + chamber.height; i++) {
 	    	if (i >= previousChamber.y && i < previousChamber.y + previousChamber.height) {
 	    		overlappingYs.push(i);
 	    	}
 	    }
-    	index = Math.floor(Math.random() * overlappingYs.length);
-    	var door = { x: chamber.x - 1, y: overlappingYs[index] };
+	    let index = Math.floor(Math.random() * overlappingYs.length);
+    	let door = { x: chamber.x - 1, y: overlappingYs[index] };
 	    
 	    return {chamber, door};
 	}
@@ -123,14 +125,14 @@ export default class App extends Component {
 		// try to attach to the bottom of an existing chamber:
 		chamber.y = previousChamber.y + previousChamber.height + 1;
 		
-	    var possibleXs = [];
-	    for (var i = previousChamber.x - chamber.width + 1; i < previousChamber.x + previousChamber.width; i++) {
+		let possibleXs = [];
+	    for (let i = previousChamber.x - chamber.width + 1; i < previousChamber.x + previousChamber.width; i++) {
 	    	if (this.checkAvailability(i, chamber.y, chamber.width, chamber.height, cells)) {
 	    		possibleXs.push(i);
 	    	}
 	    }
 	    if (possibleXs.length > 0) {
-	    	var index = Math.floor(Math.random() * possibleXs.length);
+	    	let index = Math.floor(Math.random() * possibleXs.length);
 	    	chamber.x = possibleXs[index];
 	    } else {
 	    	chamber.y = -1;
@@ -138,14 +140,14 @@ export default class App extends Component {
 	    }
 	    	
 	    // create a door between the chambers:
-	    var overlappingXs = [];
-	    for (i = chamber.x; i < chamber.x + chamber.width; i++) {
+	    let overlappingXs = [];
+	    for (let i = chamber.x; i < chamber.x + chamber.width; i++) {
 	    	if (i >= previousChamber.x && i < previousChamber.x + previousChamber.width) {
 	    		overlappingXs.push(i);
 	    	}
 	    }
-	    index = Math.floor(Math.random() * overlappingXs.length);
-	    var door = { x: overlappingXs[index], y: chamber.y - 1 };
+	    let index = Math.floor(Math.random() * overlappingXs.length);
+	    let door = { x: overlappingXs[index], y: chamber.y - 1 };
 	    	
 	    return {chamber, door};
 	}
@@ -155,8 +157,8 @@ export default class App extends Component {
 	    if (x < 0 || x + width > boardWidth || y < 0 || y + height > boardHeight) return false;
 	    
 	    // check if the cells that are going to be taken are free:
-	    for (var i = y; i < y + height; i++) {
-	    	for (var j = x; j < x + width; j++) {
+	    for (let i = y; i < y + height; i++) {
+	    	for (let j = x; j < x + width; j++) {
 	    		if (cells[i][j].className.includes("empty")) return false;
 	    	}
 	    }
@@ -164,10 +166,10 @@ export default class App extends Component {
 	    return true;
 	}
 	
-	redrawBoard(chambers, doors, cells) {
+	drawChamber(chambers, doors, cells) {
 		chambers.forEach(c => {
-			for (var i = c.y; i < c.y + c.height; i++) {
-				for (var j = c.x; j < c.x + c.width; j++) {
+			for (let i = c.y; i < c.y + c.height; i++) {
+				for (let j = c.x; j < c.x + c.width; j++) {
 					if(cells[i][j].className === "cell") cells[i][j].className += " empty";
 				}
 		    }
@@ -180,20 +182,18 @@ export default class App extends Component {
 		return cells;
 	}
 	
-	createContent(cells) {
-		var emptyCells = [];
-	    for (var i = 0; i < boardHeight; i++) {
-	    	for (var j = 0; j < boardWidth; j++) {
+	createContent(cells, dungeon) {
+		let emptyCells = [];
+	    for (let i = 0; i < boardHeight; i++) {
+	    	for (let j = 0; j < boardWidth; j++) {
 	    		if (cells[i][j].className.includes("empty")) emptyCells.push(cells[i][j]);
 	    	}
 	    }
 	    
 	    // create the cursor:
-	    var index = Math.floor(Math.random() * emptyCells.length);
+	    let index = Math.floor(Math.random() * emptyCells.length);
 	    cells[emptyCells[index].row][emptyCells[index].column].className += " cursor";
-	    // preserve the position of the cursor:
-	    cursorX = emptyCells[index].column;
-	    cursorY = emptyCells[index].row;
+	    let cursor = {x: emptyCells[index].column, y: emptyCells[index].row};
 	    emptyCells.splice(index, 1);
 	    
 	    // create the weapon:
@@ -209,14 +209,14 @@ export default class App extends Component {
 	    }
 	    
 	    // create the health items:
-	    for (i = 0; i < 5; i++) {
+	    for (let i = 0; i < 5; i++) {
 	    	index = Math.floor(Math.random() * emptyCells.length);
 	    	cells[emptyCells[index].row][emptyCells[index].column].className += " health";
 	    	emptyCells.splice(index, 1);
 	    }
 	    
 	    // create the enemies:
-	    for (i = 0; i < 5; i++) {
+	    for (let i = 0; i < 5; i++) {
 	    	index = Math.floor(Math.random() * emptyCells.length);
 	    	cells[emptyCells[index].row][emptyCells[index].column].className += " enemy";
 	    	emptyCells.splice(index, 1);
@@ -225,9 +225,9 @@ export default class App extends Component {
 	    
 	    // create the boss:
 	    if (dungeon === 5) {
-	    	var bosses = [{}];
-	    	for (i = 0; i < boardHeight - 1; i++) {
-	    		for (j = 0; j < boardWidth - 1; j++) {
+	    	let bosses = [{}];
+	    	for (let i = 0; i < boardHeight - 1; i++) {
+	    		for (let j = 0; j < boardWidth - 1; j++) {
 	    			if (cells[i][j].className.includes("empty") && 
 	    				cells[i][j + 1].className.includes("empty") && 
 	    				cells[i + 1][j].className.includes("empty") && 
@@ -238,19 +238,24 @@ export default class App extends Component {
 	    	}
 	    	// pick a square randomly:
 	    	index = Math.floor(Math.random() * bosses.length);
-	    	for (i = 0; i < bosses[index].length; i++) {
+	    	for (let i = 0; i < bosses[index].length; i++) {
 	    		cells[bosses[index][i].row][bosses[index][i].column].className += " boss";
 	    	}
 	    }
 	    
-	    return cells;
+	    return {cells: cells, cursor: cursor};
+	}
+	
+	updateCells(cells) {
+		this.setState({cells: cells});
 	}
 	
 	render() {
 		return (
 			<div>
-				<Header />
-				<Dungeon cells={this.state.cells} />
+				<Header health={this.state.health} weapon={this.state.weapon} attack={this.state.attack} level={this.state.level} xP={this.state.xP} dungeon={this.state.dungeon} 
+				 cells={this.state.cells} cursor={this.state.cursor} updateCells={this.updateCells} />
+				<Dungeon weapons={this.state.weapons} health={this.state.health} dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} />
 			</div>
 		);
 	}
