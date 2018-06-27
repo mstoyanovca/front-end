@@ -10,14 +10,15 @@ const boardWidth = 80;
 const boardHeight = 80;
 // 20 gives good board density:
 const numberOfChambers = 20;
-// xP - next level points; add 60 for each level;
+// nextLevelPoints - add 60 for each level;
 
 export default class App extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, xP: 60, dungeon: 0, cells: [], cursor: {}};
+	    this.state = {health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: [], cursor: {}};
 	    this.updateCells = this.updateCells.bind(this);
+	    this.move = this.move.bind(this);
 	}
 	
 	componentDidMount() {
@@ -190,39 +191,39 @@ export default class App extends Component {
 	    
 	    // create the cursor:
 	    let index = Math.floor(Math.random() * emptyCells.length);
-	    cells[emptyCells[index].row][emptyCells[index].column].className += " cursor";
+	    cells[emptyCells[index].row][emptyCells[index].column].className = cells[emptyCells[index].row][emptyCells[index].column].className.replace("empty", "cursor");
 	    let cursor = {x: emptyCells[index].column, y: emptyCells[index].row};
 	    emptyCells.splice(index, 1);
 	    
 	    // create the weapon:
 	    index = Math.floor(Math.random() * emptyCells.length);
-	    cells[emptyCells[index].row][emptyCells[index].column].className += " weapon";
+	    cells[emptyCells[index].row][emptyCells[index].column].className = cells[emptyCells[index].row][emptyCells[index].column].className.replace("empty", "weapon");
 	    emptyCells.splice(index, 1);
 	    
 	    // create the stairs to the next dungeon:
 	    if (dungeon < 4) {
 	    	index = Math.floor(Math.random() * emptyCells.length);
-	    	cells[emptyCells[index].row][emptyCells[index].column].className += " stairs";
+	    	cells[emptyCells[index].row][emptyCells[index].column].className = cells[emptyCells[index].row][emptyCells[index].column].className.replace("empty", "stairs");
 	    	emptyCells.splice(index, 1);
 	    }
 	    
 	    // create the health items:
 	    for (let i = 0; i < 5; i++) {
 	    	index = Math.floor(Math.random() * emptyCells.length);
-	    	cells[emptyCells[index].row][emptyCells[index].column].className += " health";
+	    	cells[emptyCells[index].row][emptyCells[index].column].className = cells[emptyCells[index].row][emptyCells[index].column].className.replace("empty", "health");
 	    	emptyCells.splice(index, 1);
 	    }
 	    
 	    // create the enemies:
 	    for (let i = 0; i < 5; i++) {
 	    	index = Math.floor(Math.random() * emptyCells.length);
-	    	cells[emptyCells[index].row][emptyCells[index].column].className += " enemy";
+	    	cells[emptyCells[index].row][emptyCells[index].column].className = cells[emptyCells[index].row][emptyCells[index].column].className.replace("empty", "enemy");
 	    	emptyCells.splice(index, 1);
 	    }
 	    
 	    
 	    // create the boss:
-	    if (dungeon === 5) {
+	    if (dungeon === 4) {
 	    	let bosses = [{}];
 	    	for (let i = 0; i < boardHeight - 1; i++) {
 	    		for (let j = 0; j < boardWidth - 1; j++) {
@@ -248,12 +249,17 @@ export default class App extends Component {
 		this.setState({cells: cells});
 	}
 	
+	move(health, dungeon, cells, cursor) {
+		this.setState({health: health, dungeon: dungeon, cells: cells, cursor: cursor});
+	}
+	
 	render() {
 		return (
 			<div>
-				<Header health={this.state.health} weapon={this.state.weapon} attack={this.state.attack} level={this.state.level} xP={this.state.xP} dungeon={this.state.dungeon} 
-				 cells={this.state.cells} cursor={this.state.cursor} updateCells={this.updateCells} />
-				<Dungeon weapons={this.state.weapons} health={this.state.health} dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} />
+				<Header health={this.state.health} weapon={this.state.weapon} attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} 
+				 dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} updateCells={this.updateCells} />
+				<Dungeon boardWidth={boardWidth} boardHeight={boardHeight} health={this.state.health} weapons={weapons} attack={this.state.attack} attackValues={attackValues} 
+				 dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} move={this.move} />
 			</div>
 		);
 	}
