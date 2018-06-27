@@ -53,6 +53,9 @@ export default class Dungeon extends Component {
 			cursor.y--;
 			this.move(health, dungeon, cells, cursor);
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("health")) {
+			cells[cursor.y - 1][cursor.x].className = "cell cursor";
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.y--;
 		    this.move(health + 20, dungeon, cells, cursor);
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("enemy")) {
 		    if (this.defeat()) this.move(health, dungeon, cells, cursor);
@@ -89,6 +92,9 @@ export default class Dungeon extends Component {
 			cursor.x++;
 			this.move(health, dungeon, cells, cursor);
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("health")) {
+			cells[cursor.y][cursor.x + 1].className = "cell cursor";
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.x++;
 			this.move(health + 20, dungeon, cells, cursor);
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("enemy")) {
 			if (this.defeat()) this.move(health, dungeon, cells, cursor);
@@ -126,8 +132,14 @@ export default class Dungeon extends Component {
 			cursor.y++;
 			this.move(health, dungeon, cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("health")) {
+			cells[cursor.y + 1][cursor.x].className = "cell cursor";
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.y++;
 		    this.move(health + 20, dungeon, cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("enemy")) {
+			cells[cursor.y + 1][cursor.x].className = "cell cursor";
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.y++;
 		    if (this.defeat()) this.move(health, dungeon, cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("weapon")) {
 		    // change weapon:
@@ -164,6 +176,9 @@ export default class Dungeon extends Component {
 			cursor.x--;
 			this.move(health, dungeon, cells, cursor);
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("health")) {
+			cells[cursor.y][cursor.x - 1].className = "cell cursor"
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.x--;
 		    this.move(health + 20, dungeon, cells, cursor);
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("enemy")) {
 		    if (this.defeat()) this.move(health, dungeon, cells, cursor);
