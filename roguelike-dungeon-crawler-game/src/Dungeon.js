@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import './css/Dungeon.css';
 
 const damage = [7, 20, 32, 42, 58];  // per dungeon
-// let reward = 10  // add 10 for each level; 
+// reward - add 10 for each level;
+// enemyLife - add 50 per dungeon;
 
 export default class Dungeon extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {enemyLife: 50, reward: 10}; // add 50 per dungeon
+	    this.state = {enemyLife: 50, reward: 10};
 	}
 	
 	componentDidMount() {
@@ -41,8 +42,8 @@ export default class Dungeon extends Component {
 	}
 	
 	moveUp() {
-		const {health, cells, cursor, dungeon} = this.props;
-		let {attack} = this.props;
+		const {health, dungeon, cells, cursor} = this.props;
+		let {weapon, attack} = this.props;
 		
 		// don't leave the board:
 		if (cursor.y === 0) return;
@@ -51,19 +52,23 @@ export default class Dungeon extends Component {
 			cells[cursor.y - 1][cursor.x].className = "cell cursor";
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.y--;
-			this.move(health, dungeon, cells, cursor);
+			this.move(cells, cursor);
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("health")) {
+			this.props.updateHealth(health + 20);
+			
 			cells[cursor.y - 1][cursor.x].className = "cell cursor";
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.y--;
-		    this.move(health + 20, dungeon, cells, cursor);
+		    this.move(cells, cursor);
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("enemy")) {
-		    if (this.defeat()) this.move(health, dungeon, cells, cursor);
+		    if (this.defeat()) this.move(health, dungeon, cells, cursor);  // TODO
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("weapon")) {
-		    // change weapon:
-			let weapon = this.props.weapons[dungeon + 1];
-		    if (attack < this.props.attackValues[dungeon + 1]) attack = this.props.attackValues[dungeon + 1];
-		    this.move(health, dungeon, cells, cursor);
+		    this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
+		    
+		    cells[cursor.y - 1][cursor.x].className = "cell cursor";
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.y--;
+		    this.move(cells, cursor);
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("stairs")) {
 		    let enemyLife = 50 + dungeon * 50;
 		    this.move(health, dungeon + 1, cells, cursor);
@@ -90,19 +95,23 @@ export default class Dungeon extends Component {
 			cells[cursor.y][cursor.x + 1].className = "cell cursor";
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.x++;
-			this.move(health, dungeon, cells, cursor);
+			this.move(cells, cursor);
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("health")) {
+			this.props.updateHealth(health + 20);
+			
 			cells[cursor.y][cursor.x + 1].className = "cell cursor";
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.x++;
-			this.move(health + 20, dungeon, cells, cursor);
+			this.move(cells, cursor);
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("enemy")) {
 			if (this.defeat()) this.move(health, dungeon, cells, cursor);
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("weapon")) {
-			// change weapon:
-			let weapon = this.props.weapons[dungeon + 1];
-			if (attack < this.props.attackValues[dungeon + 1]) attack = this.props.attackValues[dungeon + 1];
-			this.move(health, dungeon, cells, cursor);
+			this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
+			
+			cells[cursor.y][cursor.x + 1].className = "cell cursor";
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.x++;
+			this.move(cells, cursor);
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("stairs")) {
 			// change dungeon:
 			let enemyLife = 50 + dungeon * 50;
@@ -130,22 +139,26 @@ export default class Dungeon extends Component {
 			cells[cursor.y + 1][cursor.x].className = "cell cursor";
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.y++;
-			this.move(health, dungeon, cells, cursor);
+			this.move(cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("health")) {
+			this.props.updateHealth(health + 20);
+			
 			cells[cursor.y + 1][cursor.x].className = "cell cursor";
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.y++;
-		    this.move(health + 20, dungeon, cells, cursor);
+		    this.move(cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("enemy")) {
 			cells[cursor.y + 1][cursor.x].className = "cell cursor";
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.y++;
 		    if (this.defeat()) this.move(health, dungeon, cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("weapon")) {
-		    // change weapon:
-		    let weapon = this.props.weapons[dungeon + 1];
-		    if (attack < this.props.attackValues[dungeon + 1]) attack = this.props.attackValues[dungeon + 1];
-		    this.move(health, dungeon, cells, cursor);
+			this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
+			
+			cells[cursor.y + 1][cursor.x].className = "cell cursor";
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.y++;
+		    this.move(cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("stairs")) {
 		    // change dungeon:
 		    let enemyLife = 50 + dungeon * 50;
@@ -174,19 +187,23 @@ export default class Dungeon extends Component {
 			cells[cursor.y][cursor.x - 1].className = "cell cursor"
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.x--;
-			this.move(health, dungeon, cells, cursor);
+			this.move(cells, cursor);
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("health")) {
+			this.props.updateHealth(health + 20);
+			
 			cells[cursor.y][cursor.x - 1].className = "cell cursor"
 			cells[cursor.y][cursor.x].className = "cell empty";
 			cursor.x--;
-		    this.move(health + 20, dungeon, cells, cursor);
+		    this.move(cells, cursor);
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("enemy")) {
 		    if (this.defeat()) this.move(health, dungeon, cells, cursor);
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("weapon")) {
-		    // change weapon:
-		    let weapon = this.props.weapons[dungeon + 1];
-		    if (attack < this.props.attackValues[dungeon + 1]) attack = this.props.attackValues[dungeon + 1];
-		    this.move(health, dungeon, cells, cursor);
+			this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
+			
+			cells[cursor.y][cursor.x - 1].className = "cell cursor"
+			cells[cursor.y][cursor.x].className = "cell empty";
+			cursor.x--;
+			this.move(cells, cursor);
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("stairs")) {
 		    // change dungeon:
 		    let enemyLife = 50 + dungeon * 50;
@@ -203,9 +220,9 @@ export default class Dungeon extends Component {
 		}
 	}
 	
-	move(health, dungeon, cells, cursor) {
+	move(cells, cursor) {
 	    // if (dark) moveDarkness();
-		this.props.move(health, dungeon, cells, cursor);
+		this.props.move(cells, cursor);
 	}
 	
 	defeat() {

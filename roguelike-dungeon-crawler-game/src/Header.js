@@ -36,12 +36,12 @@ export default class Header extends Component {
 					<h2 className="text-center">React Roguelike</h2>
 					<h4 className="text-center">Kill the boss in dungeon 4</h4>
 					<div className="status-bar text-center">
-						<span><b>Health:</b> {this.props.health}</span>
-						<span><b>Weapon:</b> {this.props.weapon}</span>
-						<span><b>Attack:</b> {this.props.attack}</span>
-						<span><b>Level:</b> {this.props.level}</span>
-						<span><b>Next Level Points:</b> {this.props.nextLevelPoints}</span>
-						<span><b>Dungeon:</b>{this.props.dungeon}</span>
+						<span><b>Health: </b>{this.props.health}</span>
+						<span><b>Weapon: </b>{this.props.weapon}</span>
+						<span><b>Attack: </b>{this.props.attack}</span>
+						<span><b>Level: </b>{this.props.level}</span>
+						<span><b>XP: </b>{this.props.nextLevelPoints}</span>
+						<span><b>Dungeon: </b>{this.props.dungeon}</span>
 						<Button bsStyle="default" onClick={this.toggleDarkness}>Toggle Darkness</Button>
 					</div>
 				</div>
