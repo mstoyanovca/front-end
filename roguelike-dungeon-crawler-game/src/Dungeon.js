@@ -3,8 +3,8 @@ import './css/Dungeon.css';
 
 // tune the game here:
 const damage = [7, 20, 32, 42, 58];  // per dungeon
-// enemyLife = 50, add 50 per dungeon;
-// reward = 10, add 10 per level;
+// let enemyLife = 50, add 50 per dungeon;
+// let reward = 10, add 10 per level;
 
 export default class Dungeon extends Component {
 	
@@ -207,19 +207,18 @@ export default class Dungeon extends Component {
 	}
 	
 	defeat() {
-		const {dungeon} = this.props;
-		let {health, attack, nextLevelPoints, level} = this.props;
-		let {reward, enemyLife} = this.state;
+		const {health, attack, level, nextLevelPoints, dungeon} = this.props;
+		const {reward} = this.state;
+		let {enemyLife} = this.state;
 		
 		let myDamage = Math.floor(Math.random() * damage[dungeon] / 3) * this.getSign() + damage[dungeon];
 		let enemyDamage = Math.floor(Math.random() * attack / 3) * this.getSign() + attack;
-		enemyLife = enemyLife - enemyDamage;
+		enemyLife -= enemyDamage;
 		
 		if (enemyLife > 0) {
 		    if (health - myDamage <= 0) {
-		    	console.log("Game over!");
-		    	// refresh();
-		    	// reset();
+		    	this.props.reset();
+		    	// modal lost goes here
 		    }
 		    this.setState({enemyLife: enemyLife});
 		    this.props.updateHealth(health - myDamage);
@@ -228,7 +227,7 @@ export default class Dungeon extends Component {
 			this.setState({enemyLife: 50 + dungeon * 50});
 			this.props.updateNextLevelPoints(nextLevelPoints - reward);
 		    if (nextLevelPoints === 0) {
-		    	this.props.updateLevel(level++);
+		    	this.props.updateLevel(level + 1);
 		    	// weapon bonus for fine tuning:
 		    	switch (level) {
 		        	case 2:

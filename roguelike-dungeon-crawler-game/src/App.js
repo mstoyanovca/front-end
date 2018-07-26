@@ -25,6 +25,7 @@ export default class App extends Component {
 	    this.updateNextLevelPoints = this.updateNextLevelPoints.bind(this);
 	    this.updateLevel = this.updateLevel.bind(this);
 	    this.updateAttack = this.updateAttack.bind(this);
+	    this.reset = this.reset.bind(this);
 	}
 	
 	componentDidMount() {
@@ -279,6 +280,10 @@ export default class App extends Component {
 		this.setState({attack: attack});
 	}
 	
+	reset() {
+		this.setState({health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: [], cursor: {}});
+	}
+	
 	render() {
 		return (
 			<div>
@@ -287,7 +292,7 @@ export default class App extends Component {
 				<Dungeon boardWidth={boardWidth} boardHeight={boardHeight} health={this.state.health} weapons={weapons} weapon={this.state.weapon} attackValues={attackValues}
 				 attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} 
 				 move={this.move} updateHealth={this.updateHealth} updateWeapon={this.updateWeapon} updateNextLevelPoints={this.updateNextLevelPoints} updateLevel={this.updateLevel} 
-				 updateAttack={this.updateAttack} />
+				 updateAttack={this.updateAttack} reset={this.reset} />
 			</div>
 		);
 	}
