@@ -86,6 +86,7 @@ var Dungeon = React.createClass({
     );
   }
 });
+
 var LossModal = React.createClass({
   displayName: "LossModal",
   getInitialState: function getInitialState() {
@@ -128,6 +129,7 @@ var LossModal = React.createClass({
     );
   }
 });
+
 var WinModal = React.createClass({
   displayName: "WinModal",
   getInitialState: function getInitialState() {
@@ -278,17 +280,17 @@ refresh();
 
 function createDungeon() {
   // chamber top left corner coordinates:
-  var x,
-      y = 0;
-  var chamberWidth,
-      chamberHeight = 0;
+  var x, y = 0;
+  var chamberWidth, chamberHeight = 0;
   chambers = [];
   doors = [];
+  
   // 20 gives good board density:
   for (var i = 0; i < 20; i++) {
     createChamber();
   }
   createContent();
+  
   function createChamber() {
     // random size from 6 to 18 by 6 to 18 cells:
     chamberWidth = Math.floor(Math.random() * 13) + 6;
@@ -301,6 +303,7 @@ function createDungeon() {
       if (attachBottom(chambers[i])) return;
     }
   }
+  
   function createFirst() {
     if (chambers.length === 0) {
       // position the first chamber randomly in the top left corner:
@@ -311,6 +314,7 @@ function createDungeon() {
       return true;
     }
   }
+  
   function attachRight(chamber) {
     // try to attach to the right of an existing chamber:
     x = chamber.x + chamber.width + 1;
@@ -340,6 +344,7 @@ function createDungeon() {
     }
     return false;
   }
+  
   function attachBottom(chamber) {
     // try to attach to the bottom of an existing chamber:
     y = chamber.y + chamber.height + 1;
@@ -370,6 +375,7 @@ function createDungeon() {
     }
     return false;
   }
+  
   function checkAvailability(x, y, width, height) {
     // check if the cells that are going to be taken are free:
     if (x < 0 || x + width > boardWidth || y < 0 || y + height > boardHeight) return false;
@@ -383,6 +389,7 @@ function createDungeon() {
     // console.log("true");
     return true;
   }
+  
   function drawChamber() {
     for (var i = y; i < y + chamberHeight; i++) {
       for (var j = x; j < x + chamberWidth; j++) {
@@ -390,6 +397,7 @@ function createDungeon() {
       }
     }
   }
+  
   function createContent() {
     var whites = [];
     for (var i = 0; i < boardWidth; i++) {
@@ -490,6 +498,7 @@ function moveUp() {
     refresh();
   }
 }
+
 function moveRight() {
   // don't leave the board:
   if (cursorX + 1 === boardWidth) return;
@@ -533,6 +542,7 @@ function moveRight() {
     refresh();
   }
 }
+
 function moveDown() {
   // don't leave the board:
   if (cursorY + 1 === boardHeight) return;
@@ -576,6 +586,7 @@ function moveDown() {
     refresh();
   }
 }
+
 function moveLeft() {
   // don't leave the board:
   if (cursorX - 1 < 0) return;
@@ -619,6 +630,7 @@ function moveLeft() {
     refresh();
   }
 }
+
 function resetDungeon() {
   for (var i = 0; i < boardWidth; i++) {
     for (var j = 0; j < boardHeight; j++) {
