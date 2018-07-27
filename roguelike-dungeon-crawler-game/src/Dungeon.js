@@ -59,17 +59,12 @@ export default class Dungeon extends Component {
 		    this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
 		    this.mvUp(cells, cursor);
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("stairs")) {
-		    this.setState({enemyLife: 50 + dungeon * 50});
-		    this.move(health, dungeon + 1, cells, cursor);
-		    // create new board:
-		    setTimeout(function () {
-		      //resetDungeon();
-		      //createDungeon();
-		      //refresh();
-		    }, 500);
+		    this.setState({enemyLife: 50 + (dungeon + 1) * 50});
+		    this.props.updateDungeon(dungeon + 1);
+		    this.props.move(cells, cursor);
+		    this.props.reset();
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("boss")) {
-		    // fight the boss:
-		    // fightBoss();
+			// this.fightBoss();
 		}
 	}
 	
@@ -90,18 +85,12 @@ export default class Dungeon extends Component {
 			this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
 			this.mvRight(cells, cursor);
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("stairs")) {
-			// change dungeon:
-			this.setState({enemyLife: 50 + dungeon * 50});
-			this.move(health, dungeon + 1, cells, cursor);
-			// create new board:
-			/*setTimeout(function () {
-				resetDungeon();
-				createDungeon();
-				refresh();
-			}, 500);*/
+			this.setState({enemyLife: 50 + (dungeon + 1) * 50});
+			this.props.updateDungeon(dungeon + 1);
+			this.props.move(cells, cursor);
+			this.props.reset();
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("boss")) {
-			// fight the boss:
-			// fightBoss();
+			// this.fightBoss();
 		}
 	}
 	
@@ -122,18 +111,12 @@ export default class Dungeon extends Component {
 			this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
 			this.mvDown(cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("stairs")) {
-		    // change dungeon:
-			this.setState({enemyLife: 50 + dungeon * 50});
-		    this.move(health, dungeon + 1, cells, cursor);
-		    // create new board:
-		    /*setTimeout(function () {
-		    	resetDungeon();
-		    	createDungeon();
-		    	refresh();
-		    }, 500);*/
+			this.setState({enemyLife: 50 + (dungeon + 1) * 50});
+			this.props.updateDungeon(dungeon + 1);
+			this.props.move(cells, cursor);
+			this.props.reset();
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("boss")) {
-			// fight the boss:
-		    // fightBoss();
+			// this.fightBoss();
 		}
 	}
 	
@@ -154,18 +137,12 @@ export default class Dungeon extends Component {
 			this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
 			this.mvLeft(cells, cursor);
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("stairs")) {
-		    // change dungeon:
-			this.setState({enemyLife: 50 + dungeon * 50});
-		    this.move(health, dungeon + 1, cells, cursor);
-		    // create new board:
-		    /*setTimeout(function () {
-		    	resetDungeon();
-		    	createDungeon();
-		    	refresh();
-		    }, 500);*/
+			this.setState({enemyLife: 50 + (dungeon + 1) * 50});
+			this.props.updateDungeon(dungeon + 1);
+			this.props.move(cells, cursor);
+			this.props.reset();
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("boss")) {
-			  // fight the boss:
-			  // fightBoss();
+			  // this.fightBoss();
 		}
 	}
 	
@@ -173,7 +150,7 @@ export default class Dungeon extends Component {
 		cells[cursor.y - 1][cursor.x].className = "cell cursor";
 		cells[cursor.y][cursor.x].className = "cell empty";
 		cursor.y--;
-		// if (dark) moveDarkness();
+		// if (dark) this.moveDarkness();
 		this.props.move(cells, cursor);
 	}
 	
@@ -181,7 +158,7 @@ export default class Dungeon extends Component {
 		cells[cursor.y][cursor.x + 1].className = "cell cursor";
 		cells[cursor.y][cursor.x].className = "cell empty";
 		cursor.x++;
-		// if (dark) moveDarkness();
+		// if (dark) this.moveDarkness();
 		this.props.move(cells, cursor);
 	}
 	
@@ -189,7 +166,7 @@ export default class Dungeon extends Component {
 		cells[cursor.y + 1][cursor.x].className = "cell cursor";
 		cells[cursor.y][cursor.x].className = "cell empty";
 		cursor.y++;
-		// if (dark) moveDarkness();
+		// if (dark) this.moveDarkness();
 		this.props.move(cells, cursor);
 	}
 	
@@ -197,7 +174,7 @@ export default class Dungeon extends Component {
 		cells[cursor.y][cursor.x - 1].className = "cell cursor"
 		cells[cursor.y][cursor.x].className = "cell empty";
 		cursor.x--;
-		// if (dark) moveDarkness();
+		// if (dark) this.moveDarkness();
 		this.props.move(cells, cursor);
 	}
 	
@@ -269,10 +246,8 @@ export default class Dungeon extends Component {
 
 // missing to complete:
 // - fightBoss()
-// - loss modal
-// - win modal
 // - moveDarkness()
-// - reset()
+// may be implement callback for cells update
 
 
 

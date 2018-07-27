@@ -26,9 +26,10 @@ export default class App extends Component {
 	    this.move = this.move.bind(this);
 	    this.updateHealth = this.updateHealth.bind(this);
 	    this.updateWeapon = this.updateWeapon.bind(this);
-	    this.updateNextLevelPoints = this.updateNextLevelPoints.bind(this);
-	    this.updateLevel = this.updateLevel.bind(this);
 	    this.updateAttack = this.updateAttack.bind(this);
+	    this.updateLevel = this.updateLevel.bind(this);
+	    this.updateNextLevelPoints = this.updateNextLevelPoints.bind(this);
+	    this.updateDungeon = this.updateDungeon.bind(this);
 	    this.updateShowLossModal = this.updateShowLossModal.bind(this);
 	    this.updateShowWinModal = this.updateShowWinModal.bind(this);
 	    this.reset = this.reset.bind(this);
@@ -274,16 +275,20 @@ export default class App extends Component {
 		this.setState({weapon: weapon, attack: attack});
 	}
 	
-	updateNextLevelPoints(nextLevelPoints) {
-		this.setState({nextLevelPoints: nextLevelPoints});
+	updateAttack(attack) {
+		this.setState({attack: attack});
 	}
 	
 	updateLevel(level) {
 		this.setState({level: level});
 	}
 	
-	updateAttack(attack) {
-		this.setState({attack: attack});
+	updateNextLevelPoints(nextLevelPoints) {
+		this.setState({nextLevelPoints: nextLevelPoints});
+	}
+	
+	updateDungeon(dungeon) {
+		this.setState({dungeon: dungeon});
 	}
 	
 	updateShowLossModal(show) {
@@ -308,9 +313,10 @@ export default class App extends Component {
 				<Header health={this.state.health} weapon={this.state.weapon} attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} 
 				 dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} updateCells={this.updateCells} />
 				<Dungeon boardWidth={boardWidth} boardHeight={boardHeight} health={this.state.health} weapons={weapons} weapon={this.state.weapon} attackValues={attackValues}
-				 attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} 
-				 move={this.move} updateHealth={this.updateHealth} updateWeapon={this.updateWeapon} updateNextLevelPoints={this.updateNextLevelPoints} updateLevel={this.updateLevel} 
-				 updateAttack={this.updateAttack} updateShowLossModal={this.updateShowLossModal} updateShowWinModal={this.updateShowWinModal} />
+				 attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} dungeon={this.state.dungeon} cells={this.state.cells} 
+				 cursor={this.state.cursor} move={this.move} updateHealth={this.updateHealth} updateWeapon={this.updateWeapon} updateAttack={this.updateAttack} 
+				 updateLevel={this.updateLevel} updateNextLevelPoints={this.updateNextLevelPoints} updateDungeon={this.updateDungeon} updateShowLossModal={this.updateShowLossModal} 
+				 updateShowWinModal={this.updateShowWinModal} reset={this.reset} />
 			   <LossModal show={this.state.showLossModal} reset={this.reset} />
 			   <WinModal show={this.state.showWinModal} reset={this.reset} />
 			</div>
