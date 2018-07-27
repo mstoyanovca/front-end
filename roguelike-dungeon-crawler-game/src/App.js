@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Dungeon from './Dungeon';
 import Header from './Header';
+import LossModal from './LossModal';
+import WinModal from './WinModal';
 
 const weapons = ["stick", "brass knuckles", "serrated dagger", "katana", "reaper's scythe", "large trout"];
 //tune the game here; you need 240 health points to beet the boss:
@@ -16,7 +18,8 @@ export default class App extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: [], cursor: {}};
+	    this.state = {health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: [], cursor: {},
+	    		showLossModal: false, showWinModal: false};
 	    
 	    this.updateCells = this.updateCells.bind(this);
 	    this.move = this.move.bind(this);
@@ -25,6 +28,8 @@ export default class App extends Component {
 	    this.updateNextLevelPoints = this.updateNextLevelPoints.bind(this);
 	    this.updateLevel = this.updateLevel.bind(this);
 	    this.updateAttack = this.updateAttack.bind(this);
+	    this.updateShowLossModal = this.updateShowLossModal.bind(this);
+	    this.updateShowWinModal = this.updateShowWinModal.bind(this);
 	    this.reset = this.reset.bind(this);
 	}
 	
@@ -284,6 +289,16 @@ export default class App extends Component {
 		this.setState({health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: [], cursor: {}});
 	}
 	
+	updateShowLossModal(show) {
+		console.log("show from App.js = " + show);
+		this.setState({showLossModal: show});
+		console.log("show from App.js state = " + this.state.showLossModal);
+	}
+	
+	updateShowWinModal(show) {
+		this.setState({showWinModal: show});
+	}
+	
 	render() {
 		return (
 			<div>
@@ -292,7 +307,9 @@ export default class App extends Component {
 				<Dungeon boardWidth={boardWidth} boardHeight={boardHeight} health={this.state.health} weapons={weapons} weapon={this.state.weapon} attackValues={attackValues}
 				 attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} 
 				 move={this.move} updateHealth={this.updateHealth} updateWeapon={this.updateWeapon} updateNextLevelPoints={this.updateNextLevelPoints} updateLevel={this.updateLevel} 
-				 updateAttack={this.updateAttack} reset={this.reset} />
+				 updateAttack={this.updateAttack} reset={this.reset} updateShowLossModal={this.updateShowLossModal} updateShowWinModal={this.updateShowWinModal} />
+			   <LossModal show={this.state.showLossModal} />
+			   <WinModal show={this.state.showWinModal} />
 			</div>
 		);
 	}

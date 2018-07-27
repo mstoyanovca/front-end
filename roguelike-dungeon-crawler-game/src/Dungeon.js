@@ -49,6 +49,11 @@ export default class Dungeon extends Component {
 		// don't leave the board:
 		if (cursor.y === 0) return;
 		
+		// temp to reset board:
+		console.log("Reset");
+		// this.props.updateShowLossModal(true);
+	    this.props.updateShowWinModal(true);
+		
 		if (cells[cursor.y - 1][cursor.x].className.includes("empty")) {
 			this.mvUp(cells, cursor);
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("health")) {
@@ -219,6 +224,7 @@ export default class Dungeon extends Component {
 		    if (health - myDamage <= 0) {
 		    	this.props.reset();
 		    	// modal lost goes here
+		    	// reset
 		    }
 		    this.setState({enemyLife: enemyLife});
 		    this.props.updateHealth(health - myDamage);
@@ -269,7 +275,12 @@ export default class Dungeon extends Component {
 
 
 
-
+// missing to complete:
+// - fightBoss()
+// - loss modal
+// - win modal
+// - moveDarkness()
+// - reset()
 
 
 
