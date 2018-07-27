@@ -18,6 +18,7 @@ export default class App extends Component {
 	
 	constructor(props) {
 		super(props);
+		
 	    this.state = {health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: [], cursor: {},
 	    		showLossModal: false, showWinModal: false};
 	    
@@ -285,18 +286,20 @@ export default class App extends Component {
 		this.setState({attack: attack});
 	}
 	
-	reset() {
-		this.setState({health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: [], cursor: {}});
-	}
-	
 	updateShowLossModal(show) {
-		console.log("show from App.js = " + show);
 		this.setState({showLossModal: show});
-		console.log("show from App.js state = " + this.state.showLossModal);
 	}
 	
 	updateShowWinModal(show) {
 		this.setState({showWinModal: show});
+	}
+	
+	reset() {
+		let cells = this.createEmptyBoard();
+		cells = this.createDungeon(cells);
+		let cellsWithCursor = this.createContent(cells, this.state.dungeon);
+		
+		this.setState({cells: cellsWithCursor.cells, cursor: cellsWithCursor.cursor, showLossModal: false, showWinModal: false});
 	}
 	
 	render() {
@@ -307,9 +310,9 @@ export default class App extends Component {
 				<Dungeon boardWidth={boardWidth} boardHeight={boardHeight} health={this.state.health} weapons={weapons} weapon={this.state.weapon} attackValues={attackValues}
 				 attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} 
 				 move={this.move} updateHealth={this.updateHealth} updateWeapon={this.updateWeapon} updateNextLevelPoints={this.updateNextLevelPoints} updateLevel={this.updateLevel} 
-				 updateAttack={this.updateAttack} reset={this.reset} updateShowLossModal={this.updateShowLossModal} updateShowWinModal={this.updateShowWinModal} />
-			   <LossModal show={this.state.showLossModal} />
-			   <WinModal show={this.state.showWinModal} />
+				 updateAttack={this.updateAttack} updateShowLossModal={this.updateShowLossModal} updateShowWinModal={this.updateShowWinModal} />
+			   <LossModal show={this.state.showLossModal} reset={this.reset} />
+			   <WinModal show={this.state.showWinModal} reset={this.reset} />
 			</div>
 		);
 	}

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
 export default class LostModal extends React.Component {
@@ -10,6 +10,7 @@ export default class LostModal extends React.Component {
 
 	close() {
 		this.setState({ show: false });
+		this.props.reset();
 	}
 	
 	componentWillReceiveProps(nextProps) {

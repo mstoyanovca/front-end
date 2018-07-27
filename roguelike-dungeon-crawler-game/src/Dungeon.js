@@ -44,15 +44,9 @@ export default class Dungeon extends Component {
 	
 	moveUp() {
 		const {health, dungeon, cells, cursor} = this.props;
-		let {weapon, attack} = this.props;
 		
 		// don't leave the board:
 		if (cursor.y === 0) return;
-		
-		// temp to reset board:
-		console.log("Reset");
-		// this.props.updateShowLossModal(true);
-	    this.props.updateShowWinModal(true);
 		
 		if (cells[cursor.y - 1][cursor.x].className.includes("empty")) {
 			this.mvUp(cells, cursor);
@@ -65,7 +59,7 @@ export default class Dungeon extends Component {
 		    this.props.updateWeapon(this.props.weapons[dungeon + 1], this.props.attackValues[dungeon + 1]);
 		    this.mvUp(cells, cursor);
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("stairs")) {
-		    let enemyLife = 50 + dungeon * 50;
+		    this.setState({enemyLife: 50 + dungeon * 50});
 		    this.move(health, dungeon + 1, cells, cursor);
 		    // create new board:
 		    setTimeout(function () {
@@ -81,7 +75,6 @@ export default class Dungeon extends Component {
 	
 	moveRight() {
 		const {boardWidth, health, cells, cursor, dungeon} = this.props;
-		let {attack} = this.props;
 		
 		// don't leave the board:
 		if (cursor.x + 1 === boardWidth) return;
@@ -98,7 +91,7 @@ export default class Dungeon extends Component {
 			this.mvRight(cells, cursor);
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("stairs")) {
 			// change dungeon:
-			let enemyLife = 50 + dungeon * 50;
+			this.setState({enemyLife: 50 + dungeon * 50});
 			this.move(health, dungeon + 1, cells, cursor);
 			// create new board:
 			/*setTimeout(function () {
@@ -114,7 +107,6 @@ export default class Dungeon extends Component {
 	
 	moveDown() {
 		const {boardHeight, health, cells, cursor, dungeon} = this.props;
-		let {attack} = this.props;
 		
 		// don't leave the board:
 		if (cursor.y + 1 === boardHeight) return;
@@ -131,7 +123,7 @@ export default class Dungeon extends Component {
 			this.mvDown(cells, cursor);
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("stairs")) {
 		    // change dungeon:
-		    let enemyLife = 50 + dungeon * 50;
+			this.setState({enemyLife: 50 + dungeon * 50});
 		    this.move(health, dungeon + 1, cells, cursor);
 		    // create new board:
 		    /*setTimeout(function () {
@@ -146,9 +138,7 @@ export default class Dungeon extends Component {
 	}
 	
 	moveLeft() {
-		const {boardHeight, health, cells, cursor, dungeon} = this.props;
-		let {attack} = this.props;
-		const {reward} = this.state;
+		const {health, cells, cursor, dungeon} = this.props;
 		
 		// don't leave the board:
 		if (cursor.x - 1 < 0) return;
@@ -165,7 +155,7 @@ export default class Dungeon extends Component {
 			this.mvLeft(cells, cursor);
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("stairs")) {
 		    // change dungeon:
-		    let enemyLife = 50 + dungeon * 50;
+			this.setState({enemyLife: 50 + dungeon * 50});
 		    this.move(health, dungeon + 1, cells, cursor);
 		    // create new board:
 		    /*setTimeout(function () {
@@ -222,9 +212,7 @@ export default class Dungeon extends Component {
 		
 		if (enemyLife > 0) {
 		    if (health - myDamage <= 0) {
-		    	this.props.reset();
-		    	// modal lost goes here
-		    	// reset
+		    	this.props.updateShowLossModal(true);  // resets the board on OK
 		    }
 		    this.setState({enemyLife: enemyLife});
 		    this.props.updateHealth(health - myDamage);
@@ -245,6 +233,8 @@ export default class Dungeon extends Component {
 		        	case 4:
 		        		this.props.updateAttack(attack + 128);
 		        		break;
+		        	default:
+		        		// do nothing
 		    	}
 		    	this.props.updateNextLevelPoints(60 + level * 60);
 		    	this.setState({reward: 10 + level * 10});
@@ -261,6 +251,8 @@ export default class Dungeon extends Component {
 			return 1;
 		case 1:
 			return -1;
+		default:
+			// do nothing
 		}
 	}
 	
