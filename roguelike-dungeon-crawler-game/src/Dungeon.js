@@ -10,7 +10,8 @@ export default class Dungeon extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {enemyLife: 50, reward: 10, };
+	    this.state = {enemyLife: 50, reward: 10, bossLife: 240};
+	    this.moveLeft = this.moveLeft.bind(this);
 	}
 	
 	componentDidMount() {
@@ -62,9 +63,10 @@ export default class Dungeon extends Component {
 		    this.setState({enemyLife: 50 + (dungeon + 1) * 50});
 		    this.props.updateDungeon(dungeon + 1);
 		    this.props.move(cells, cursor);
-		    this.props.reset();
+		    this.props.startNewDungeon();
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("boss")) {
-			// this.fightBoss();
+			console.log("boss");
+			this.fightBoss();
 		}
 	}
 	
@@ -88,9 +90,10 @@ export default class Dungeon extends Component {
 			this.setState({enemyLife: 50 + (dungeon + 1) * 50});
 			this.props.updateDungeon(dungeon + 1);
 			this.props.move(cells, cursor);
-			this.props.reset();
+			this.props.startNewDungeon();
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("boss")) {
-			// this.fightBoss();
+			console.log("boss");
+			this.fightBoss();
 		}
 	}
 	
@@ -114,9 +117,10 @@ export default class Dungeon extends Component {
 			this.setState({enemyLife: 50 + (dungeon + 1) * 50});
 			this.props.updateDungeon(dungeon + 1);
 			this.props.move(cells, cursor);
-			this.props.reset();
+			this.props.startNewDungeon();
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("boss")) {
-			// this.fightBoss();
+			console.log("boss");
+			this.fightBoss();
 		}
 	}
 	
@@ -140,9 +144,9 @@ export default class Dungeon extends Component {
 			this.setState({enemyLife: 50 + (dungeon + 1) * 50});
 			this.props.updateDungeon(dungeon + 1);
 			this.props.move(cells, cursor);
-			this.props.reset();
+			this.props.startNewDungeon();
 		} else if (cells[cursor.y][cursor.x - 1].className.includes("boss")) {
-			  // this.fightBoss();
+			this.fightBoss();
 		}
 	}
 	
@@ -180,8 +184,8 @@ export default class Dungeon extends Component {
 	
 	defeat() {
 		const {health, attack, level, nextLevelPoints, dungeon} = this.props;
-		const {reward} = this.state;
-		let {enemyLife} = this.state;
+		const reward = this.state.reward;
+		let enemyLife = this.state.enemyLife;
 		
 		let myDamage = Math.floor(Math.random() * damage[dungeon] / 3) * this.getSign() + damage[dungeon];
 		let enemyDamage = Math.floor(Math.random() * attack / 3) * this.getSign() + attack;
@@ -234,11 +238,23 @@ export default class Dungeon extends Component {
 	}
 	
 	moveDarkness(cells, cursor) {
-		const {boardWidth, boardHeight} = this.props;
 		cells.forEach(row => row.forEach(cell => {
 			cell.className = cell.className.replace("dark", "").trim();
 			if (Math.abs(cursor.x - cell.column) > 6 || Math.abs(cursor.y - cell.row) > 6) cell.className += " dark";
 		}));
+	}
+	
+	fightBoss() {
+		const health = this.props.health - 120;
+		const bossLife = this.state.bossLife - 120;
+		
+		if (bossLife > 0) {
+		    if (health <= 0) this.props.updateShowLossModal(true);  // resets the board on OK
+		    this.setState({bossLife: bossLife});
+		    this.props.updateHealth(health);
+		} else {
+			this.props.updateShowWinModal(true);  // resets the board on OK
+		}
 	}
 	
 	render() {
@@ -250,11 +266,6 @@ export default class Dungeon extends Component {
 	}
 }
 
-
-
-// missing to complete:
-// - fightBoss()
-// may be implement callback for cells update
 
 
 

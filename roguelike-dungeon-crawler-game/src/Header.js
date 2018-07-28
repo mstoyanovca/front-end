@@ -36,7 +36,7 @@ export default class Header extends Component {
 	render() {
 		return (
 			<div>
-				<div className="sticky">
+				<div>
 					<h2 className="text-center">React Roguelike</h2>
 					<h4 className="text-center">Kill the boss in dungeon 4</h4>
 					<div className="status-bar text-center">

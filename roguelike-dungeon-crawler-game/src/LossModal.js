@@ -10,7 +10,7 @@ export default class LossModal extends React.Component {
 
 	close() {
 		this.setState({ show: false });
-		this.props.reset();
+		this.props.startNewGame();
 	}
 	
 	componentWillReceiveProps(nextProps) {

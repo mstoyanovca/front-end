@@ -32,7 +32,8 @@ export default class App extends Component {
 	    this.updateDungeon = this.updateDungeon.bind(this);
 	    this.updateShowLossModal = this.updateShowLossModal.bind(this);
 	    this.updateShowWinModal = this.updateShowWinModal.bind(this);
-	    this.reset = this.reset.bind(this);
+	    this.startNewDungeon = this.startNewDungeon.bind(this);
+	    this.startNewGame = this.startNewGame.bind(this);
 	    this.updateDark = this.updateDark.bind(this);
 	}
 	
@@ -253,7 +254,7 @@ export default class App extends Component {
 	    	// pick a square randomly:
 	    	index = Math.floor(Math.random() * bosses.length);
 	    	for (let i = 0; i < bosses[index].length; i++) {
-	    		cells[bosses[index][i].row][bosses[index][i].column].className += " boss";
+	    		cells[bosses[index][i].row][bosses[index][i].column].className = "cell boss";
 	    	}
 	    }
 	    
@@ -292,6 +293,10 @@ export default class App extends Component {
 		this.setState({dungeon: dungeon});
 	}
 	
+	updateDark(dark) {
+		this.setState({dark: dark});
+	}
+	
 	updateShowLossModal(show) {
 		this.setState({showLossModal: show});
 	}
@@ -300,7 +305,7 @@ export default class App extends Component {
 		this.setState({showWinModal: show});
 	}
 	
-	reset() {
+	startNewDungeon() {
 		let cells = this.createEmptyBoard();
 		cells = this.createDungeon(cells);
 		let cellsWithCursor = this.createContent(cells, this.state.dungeon);
@@ -308,8 +313,13 @@ export default class App extends Component {
 		this.setState({cells: cellsWithCursor.cells, cursor: cellsWithCursor.cursor, showLossModal: false, showWinModal: false});
 	}
 	
-	updateDark(dark) {
-		this.setState({dark: dark});
+	startNewGame() {
+		let cells = this.createEmptyBoard();
+		cells = this.createDungeon(cells);
+		let cellsWithCursor = this.createContent(cells, 0);
+		
+		this.setState({health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: cellsWithCursor.cells, cursor: cellsWithCursor.cursor,
+    		showLossModal: false, showWinModal: false, dark: false});
 	}
 	
 	render() {
@@ -321,9 +331,9 @@ export default class App extends Component {
 				 attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} dungeon={this.state.dungeon} cells={this.state.cells} 
 				 cursor={this.state.cursor} dark={this.state.dark} move={this.move} updateHealth={this.updateHealth} updateWeapon={this.updateWeapon} updateAttack={this.updateAttack} 
 				 updateLevel={this.updateLevel} updateNextLevelPoints={this.updateNextLevelPoints} updateDungeon={this.updateDungeon} updateShowLossModal={this.updateShowLossModal} 
-				 updateShowWinModal={this.updateShowWinModal} reset={this.reset} />
-			   <LossModal show={this.state.showLossModal} reset={this.reset} />
-			   <WinModal show={this.state.showWinModal} reset={this.reset} />
+				 updateShowWinModal={this.updateShowWinModal} startNewDungeon={this.startNewDungeon} />
+			   <LossModal show={this.state.showLossModal} startNewGame={this.startNewGame} />
+			   <WinModal show={this.state.showWinModal} startNewGame={this.startNewGame} />
 			</div>
 		);
 	}
