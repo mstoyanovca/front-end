@@ -6,13 +6,17 @@ export default class Header extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {dark: false};
+	    this.state = {dark: this.props.dark};
 	    this.toggleDarkness = this.toggleDarkness.bind(this);
 	}
 	
 	componentDidMount() {
 		window.addEventListener('button-click', this.toggleDarkness);
 	}
+	
+	componentWillReceiveProps(nextProps) {
+		this.setState({dark: nextProps.dark});
+	} 
 
 	toggleDarkness() {
 		let dark = !this.state.dark;
@@ -25,8 +29,8 @@ export default class Header extends Component {
 			cells.forEach(row => row.forEach(cell => cell.className = cell.className.replace("dark", "").trim()));
 		}
 		
-		this.setState({dark: dark});
 		this.props.updateCells(cells);
+		this.props.updateDark(dark);
 	}
 	
 	render() {

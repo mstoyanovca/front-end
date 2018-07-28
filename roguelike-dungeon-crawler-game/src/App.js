@@ -20,7 +20,7 @@ export default class App extends Component {
 		super(props);
 		
 	    this.state = {health: 100, weapon: weapons[0], attack: attackValues[0], level: 0, nextLevelPoints: 60, dungeon: 0, cells: [], cursor: {},
-	    		showLossModal: false, showWinModal: false};
+	    		showLossModal: false, showWinModal: false, dark: false};
 	    
 	    this.updateCells = this.updateCells.bind(this);
 	    this.move = this.move.bind(this);
@@ -33,6 +33,7 @@ export default class App extends Component {
 	    this.updateShowLossModal = this.updateShowLossModal.bind(this);
 	    this.updateShowWinModal = this.updateShowWinModal.bind(this);
 	    this.reset = this.reset.bind(this);
+	    this.updateDark = this.updateDark.bind(this);
 	}
 	
 	componentDidMount() {
@@ -307,14 +308,18 @@ export default class App extends Component {
 		this.setState({cells: cellsWithCursor.cells, cursor: cellsWithCursor.cursor, showLossModal: false, showWinModal: false});
 	}
 	
+	updateDark(dark) {
+		this.setState({dark: dark});
+	}
+	
 	render() {
 		return (
 			<div>
 				<Header health={this.state.health} weapon={this.state.weapon} attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} 
-				 dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} updateCells={this.updateCells} />
+				 dungeon={this.state.dungeon} cells={this.state.cells} cursor={this.state.cursor} dark={this.state.dark} updateCells={this.updateCells} updateDark={this.updateDark} />
 				<Dungeon boardWidth={boardWidth} boardHeight={boardHeight} health={this.state.health} weapons={weapons} weapon={this.state.weapon} attackValues={attackValues}
 				 attack={this.state.attack} level={this.state.level} nextLevelPoints={this.state.nextLevelPoints} dungeon={this.state.dungeon} cells={this.state.cells} 
-				 cursor={this.state.cursor} move={this.move} updateHealth={this.updateHealth} updateWeapon={this.updateWeapon} updateAttack={this.updateAttack} 
+				 cursor={this.state.cursor} dark={this.state.dark} move={this.move} updateHealth={this.updateHealth} updateWeapon={this.updateWeapon} updateAttack={this.updateAttack} 
 				 updateLevel={this.updateLevel} updateNextLevelPoints={this.updateNextLevelPoints} updateDungeon={this.updateDungeon} updateShowLossModal={this.updateShowLossModal} 
 				 updateShowWinModal={this.updateShowWinModal} reset={this.reset} />
 			   <LossModal show={this.state.showLossModal} reset={this.reset} />

@@ -10,7 +10,7 @@ export default class Dungeon extends Component {
 	
 	constructor(props) {
 		super(props);
-	    this.state = {enemyLife: 50, reward: 10};
+	    this.state = {enemyLife: 50, reward: 10, };
 	}
 	
 	componentDidMount() {
@@ -150,7 +150,7 @@ export default class Dungeon extends Component {
 		cells[cursor.y - 1][cursor.x].className = "cell cursor";
 		cells[cursor.y][cursor.x].className = "cell empty";
 		cursor.y--;
-		// if (dark) this.moveDarkness();
+		if (this.props.dark) this.moveDarkness(cells, cursor);
 		this.props.move(cells, cursor);
 	}
 	
@@ -158,7 +158,7 @@ export default class Dungeon extends Component {
 		cells[cursor.y][cursor.x + 1].className = "cell cursor";
 		cells[cursor.y][cursor.x].className = "cell empty";
 		cursor.x++;
-		// if (dark) this.moveDarkness();
+		if (this.props.dark) this.moveDarkness(cells, cursor);
 		this.props.move(cells, cursor);
 	}
 	
@@ -166,7 +166,7 @@ export default class Dungeon extends Component {
 		cells[cursor.y + 1][cursor.x].className = "cell cursor";
 		cells[cursor.y][cursor.x].className = "cell empty";
 		cursor.y++;
-		// if (dark) this.moveDarkness();
+		if (this.props.dark) this.moveDarkness(cells, cursor);
 		this.props.move(cells, cursor);
 	}
 	
@@ -174,7 +174,7 @@ export default class Dungeon extends Component {
 		cells[cursor.y][cursor.x - 1].className = "cell cursor"
 		cells[cursor.y][cursor.x].className = "cell empty";
 		cursor.x--;
-		// if (dark) this.moveDarkness();
+		if (this.props.dark) this.moveDarkness(cells, cursor);
 		this.props.move(cells, cursor);
 	}
 	
@@ -233,6 +233,14 @@ export default class Dungeon extends Component {
 		}
 	}
 	
+	moveDarkness(cells, cursor) {
+		const {boardWidth, boardHeight} = this.props;
+		cells.forEach(row => row.forEach(cell => {
+			cell.className = cell.className.replace("dark", "").trim();
+			if (Math.abs(cursor.x - cell.column) > 6 || Math.abs(cursor.y - cell.row) > 6) cell.className += " dark";
+		}));
+	}
+	
 	render() {
 		return (
 			<div className="dungeon center-block">
@@ -246,7 +254,6 @@ export default class Dungeon extends Component {
 
 // missing to complete:
 // - fightBoss()
-// - moveDarkness()
 // may be implement callback for cells update
 
 
