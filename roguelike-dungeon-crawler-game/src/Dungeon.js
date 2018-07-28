@@ -65,7 +65,6 @@ export default class Dungeon extends Component {
 		    this.props.move(cells, cursor);
 		    this.props.startNewDungeon();
 		} else if (cells[cursor.y - 1][cursor.x].className.includes("boss")) {
-			console.log("boss");
 			this.fightBoss();
 		}
 	}
@@ -92,7 +91,6 @@ export default class Dungeon extends Component {
 			this.props.move(cells, cursor);
 			this.props.startNewDungeon();
 		} else if (cells[cursor.y][cursor.x + 1].className.includes("boss")) {
-			console.log("boss");
 			this.fightBoss();
 		}
 	}
@@ -119,7 +117,6 @@ export default class Dungeon extends Component {
 			this.props.move(cells, cursor);
 			this.props.startNewDungeon();
 		} else if (cells[cursor.y + 1][cursor.x].className.includes("boss")) {
-			console.log("boss");
 			this.fightBoss();
 		}
 	}

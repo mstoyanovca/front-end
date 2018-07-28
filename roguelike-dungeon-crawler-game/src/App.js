@@ -217,7 +217,7 @@ export default class App extends Component {
 	    emptyCells.splice(index, 1);
 	    
 	    // create the stairs to the next dungeon:
-	    if (dungeon < 5) {
+	    if (dungeon < 4) {
 	    	index = Math.floor(Math.random() * emptyCells.length);
 	    	cells[emptyCells[index].row][emptyCells[index].column].className = cells[emptyCells[index].row][emptyCells[index].column].className.replace("empty", "stairs");
 	    	emptyCells.splice(index, 1);
